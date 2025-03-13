@@ -22,9 +22,9 @@ export const quizesApiSlice = apiSlice.injectEndpoints({
                 providesTags: ['Quiz'], // Provides 'Quiz' tag for cache management
                 keepUnusedDataFor: 5, // Keeps the data for 5 seconds before it expires
                 credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                }, 
+                // headers: {
+                //     'Content-Type': 'application/json',
+                // }, 
             }),
         }),
         deleteQuiz: builder.mutation({
@@ -39,6 +39,18 @@ export const quizesApiSlice = apiSlice.injectEndpoints({
             // If the deletion is successful, we invalidate 'Quiz' to refresh the data
             invalidatesTags: ['Quiz'], 
         }),
+        getAllCreatedQuizes: builder.query({
+            query: () => ({
+                url: `${QUIZES_URL}/getCreatedQuizes`,
+                method: 'GET',
+                providesTags: ['Quiz'],
+                keepUnusedDataFor: 5, // Keeps data for 5 seconds
+                credentials: 'include',
+                // headers: {
+                //     'Content-Type': 'application/json',
+                // },
+            }), 
+        })
     }),
 });
 
@@ -46,5 +58,6 @@ export const quizesApiSlice = apiSlice.injectEndpoints({
 export const { 
   useCreateQuizesMutation, 
   useViewQuizQuery,
-  useDeleteQuizMutation 
+  useDeleteQuizMutation,
+  useGetAllCreatedQuizesQuery 
 } = quizesApiSlice;

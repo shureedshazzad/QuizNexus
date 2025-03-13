@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'
 
 function Features() {
   const containerStyle = {
@@ -65,17 +66,27 @@ function Features() {
 
           {/* Make Quizzes Feature */}
           <div className="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-            <div className="service-item h-100 p-5" style={backgroundStyle}>
-              <div style={circleStyle} className="service-icon">
-                <i className="fa fa-pencil-alt text-warning fs-4"></i>
-              </div>
-              <h4 className="mb-3 mt-2">Make Quizzes</h4>
-              <p className="mb-4">Create and design your own quizzes to challenge others. Customize questions, set difficulty levels, and create quizzes based on your interests.</p>
-              <button style={buttonStyle} onMouseOver={(e) => e.target.style.backgroundColor = buttonHoverStyle.backgroundColor} onMouseOut={(e) => e.target.style.backgroundColor = buttonStyle.backgroundColor}>
-                Try Now
-              </button>
-            </div>
-          </div>
+  <div className="service-item h-100 p-5" style={backgroundStyle}>
+    <div style={circleStyle} className="service-icon">
+      <i className="fa fa-pencil-alt text-warning fs-4"></i>
+    </div>
+    <h4 className="mb-3 mt-2">Make Quizzes</h4>
+    <p className="mb-4">
+      Create and design your own quizzes to challenge others. Customize questions, and create quizzes based on your interests.
+    </p>
+    
+    <Link to="/create-quiz" style={{ textDecoration: 'none' }}>
+      <button 
+        style={buttonStyle} 
+        onMouseOver={(e) => e.target.style.backgroundColor = buttonHoverStyle.backgroundColor} 
+        onMouseOut={(e) => e.target.style.backgroundColor = buttonStyle.backgroundColor}
+      >
+        Try Now
+      </button>
+    </Link>
+  </div>
+</div>
+
 
           {/* Challenge with AI Feature */}
           <div className="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">

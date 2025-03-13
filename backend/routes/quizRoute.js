@@ -8,11 +8,13 @@ import {
     endQuiz,
     showLeaderBoards,
     viewQuizDetails,
-    deleteQuiz
+    deleteQuiz,
+    viewAllCreatedQuizes
 } from "../controllers/quizController.js";
 import { protect} from "../middleware/authMiddleware.js";
 
 router.post('/create', protect, createQuiz);
+router.get('/getCreatedQuizes',protect,viewAllCreatedQuizes);
 router.get('/viewQuiz/:id',protect,viewQuizDetails);
 router.delete('/delete/:id',protect,deleteQuiz);
 router.post("/:id/se", protect, setStartQuizEndQuiz);

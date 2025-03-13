@@ -51,6 +51,16 @@ const createQuiz = asyncHandler(async (req, res) => {
   
   });
 
+//@desc view all quizes
+//@route GET/api/createdQuizes
+//@access Public
+const viewAllCreatedQuizes = asyncHandler(async (req, res) => {
+  const quizes = await Quiz.find().populate('user_id');
+  res.status(200).json(quizes);
+})
+
+
+
 // @desc    View a quiz and its details
 // @route   GET /api/quizes/:id
 // @access  Private
@@ -360,7 +370,8 @@ export {
   endQuiz,
   showLeaderBoards,
   viewQuizDetails,
-  deleteQuiz
+  deleteQuiz,
+  viewAllCreatedQuizes
 };
 
 

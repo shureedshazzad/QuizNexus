@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLogoutMutation } from '../slices/usersApiSlice';
 import { logout } from '../slices/authSlice';
-import { FaHome, FaPlayCircle, FaPlusCircle, FaRobot, FaSignInAlt, FaUser, FaSignOutAlt } from 'react-icons/fa'; // Import icons
+import { FaHome, FaPlayCircle, FaPlusCircle, FaRobot, FaSignInAlt, FaUser, FaSignOutAlt, FaClipboardList } from 'react-icons/fa'; // Import icons
 import './navDesign.css';
 
 const logoStyle = {
@@ -99,6 +99,9 @@ function Navbar() {
                     <FaSignOutAlt className="me-2" /> 
                     Logout
                   </button>
+                  <Link to = "/view-all-created-quizes" className="dropdown-item">
+                     <FaClipboardList className="me-2" /> My Quizzes
+                  </Link>
                 </div>
               )}
             </div>

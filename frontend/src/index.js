@@ -23,6 +23,7 @@ import PasswordRecoveryOtpScreen from './screens/PasswordRecoveryOtpScreen.jsx';
 import Changepasswordscreen from './screens/Changepasswordscreen.jsx';
 import Createquizscreen from './screens/Createquizscreen.jsx';
 import ViewQuizDetailsScreen from './screens/ViewQuizDetailsscreen.jsx';
+import Viewallcreatedquizes from './screens/Viewallcreatedquizes.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,6 +40,7 @@ const router = createBrowserRouter(
       <Route path='' element={<PrivateRoute/>}>
           <Route path='/create-quiz' element={<Createquizscreen/>}/>
           <Route path='/view-quiz/:id' element={<ViewQuizDetailsScreen/>}/>
+          <Route path='/view-all-created-quizes' element={<Viewallcreatedquizes/>}/>
       </Route>
 
 
