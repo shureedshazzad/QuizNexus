@@ -50,6 +50,17 @@ export const quizesApiSlice = apiSlice.injectEndpoints({
                 //     'Content-Type': 'application/json',
                 // },
             }), 
+        }),
+        setStartTimeEndTimeOfQuiz: builder.mutation({
+            query: (id) => ({
+                url: `${QUIZES_URL}/se/${id}`,
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }),
+            invalidatesTags: ['Quiz'], 
         })
     }),
 });
@@ -59,5 +70,6 @@ export const {
   useCreateQuizesMutation, 
   useViewQuizQuery,
   useDeleteQuizMutation,
-  useGetAllCreatedQuizesQuery 
+  useGetAllCreatedQuizesQuery,
+  useSetStartTimeEndTimeOfQuizMutation
 } = quizesApiSlice;

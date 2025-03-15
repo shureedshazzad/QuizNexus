@@ -116,7 +116,7 @@ const deleteQuiz = asyncHandler(async (req, res) => {
 
 
 // @desc    Start a quiz
-// @route   POST /api/quizes/:id/se
+// @route   POST /api/quizes/se/:id
 // @access  Private
 
 const setStartQuizEndQuiz = asyncHandler(async (req, res) => {
@@ -125,16 +125,20 @@ const setStartQuizEndQuiz = asyncHandler(async (req, res) => {
   if (!quiz) {
     return res.status(404).json({ message: "Quiz not found" });
   }
+  if (quiz.status === "active") {
+    return res.status(400).json({ message: "Quiz is already active" });
+  }
 
   // Check if the quiz has already started
-  if (quiz.status === 'active') {
-    return res.status(400).json({ message: "Quiz has already started" });
+  if (quiz.status === 'completed') {
+    return res.status(400).json({ message: "Quiz has already ended" });
   }
 
   try {
     const startTime = new Date();
-    startTime.setSeconds(startTime.getSeconds() + 60); // Add 1 minute
-    const endTime = new Date(startTime.getTime() + quiz.quiz_duration * 1000); // Add total_duration in milliseconds
+    startTime.setSeconds(startTime.getSeconds() + 60); // Add 2 minute
+    const quiz_duration_in_second = quiz.quiz_duration * 60; // Convert minutes to seconds
+    const endTime = new Date(startTime.getTime() + quiz_duration_in_second * 1000); // Add total_duration in milliseconds
 
     quiz.quiz_start_time = startTime;
     quiz.quiz_end_time = endTime;
