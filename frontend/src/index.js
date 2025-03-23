@@ -24,6 +24,8 @@ import Changepasswordscreen from './screens/Changepasswordscreen.jsx';
 import Createquizscreen from './screens/Createquizscreen.jsx';
 import ViewQuizDetailsScreen from './screens/ViewQuizDetailsscreen.jsx';
 import Viewallcreatedquizes from './screens/Viewallcreatedquizes.jsx';
+import Joinquiz from './screens/Joinquiz.jsx';
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -41,6 +43,7 @@ const router = createBrowserRouter(
           <Route path='/create-quiz' element={<Createquizscreen/>}/>
           <Route path='/view-quiz/:id' element={<ViewQuizDetailsScreen/>}/>
           <Route path='/view-all-created-quizes' element={<Viewallcreatedquizes/>}/>
+          <Route path='/join-quiz' element={<Joinquiz/>}/>
       </Route>
 
 
@@ -52,7 +55,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router}/>
+        <RouterProvider router={router}/>
     </Provider>
   </React.StrictMode>
 );

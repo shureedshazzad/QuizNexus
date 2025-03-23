@@ -8,7 +8,8 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import userRoute from './routes/userRoute.js';
 import quizRoute from './routes/quizRoute.js'
 import { createServer } from 'http'; // HTTP server for Socket.IO
-import { Server } from 'socket.io'; // Socket.IO server
+
+
 
 
 
@@ -48,14 +49,11 @@ app.get('/', (req,res) =>{
 app.use(notFound);
 app.use(errorHandler);
   
-app.listen(port, () => console.log(`Sever is running on port ${port}`));
 
 
 
-
-
-// //create an http server
-// const httpServer = createServer(app);
+//create an http server
+const httpServer = createServer(app);
 
 // //create a socket.io server
 // const io = new Server(httpServer, {
@@ -68,16 +66,37 @@ app.listen(port, () => console.log(`Sever is running on port ${port}`));
 
 // // Socket.IO connection handler
 // io.on('connection', (socket) => {
-//     console.log('A user connected:', socket.id);
-  
-//     // Handle joining a quiz
-//     socket.on('join-quiz', (quizId) => {
+//   console.log('A user connected:', socket.id);
+
+//   // Handle joining a quiz
+//   socket.on('join-quiz', async (quizId) => {
+//     try {
 //       socket.join(quizId); // Join a room for the quiz
 //       console.log(`User ${socket.id} joined quiz ${quizId}`);
-  
-//       // Notify other users in the quiz that a new participant has joined
-//       socket.to(quizId).emit('participant-joined', { userId: socket.id });
-//     });
+
+//       // Fetch the updated leaderboard from the database using Mongoose
+//       const quiz = await Quiz.findById(quizId).populate('leaderboard.user_id', 'userName avatar');
+//       const leaderboard = quiz.leaderboard;
+
+//       console.log(leaderboard);
+//       // Notify all clients in the quiz room about the updated leaderboard
+//       io.to(quizId).emit('leaderboard-updated', { leaderboard });
+//     } catch (error) {
+//       console.error('Error fetching quiz:', error);
+//     }
+//   });
+
+
+ 
+
+
+//   // Handle disconnection
+//   socket.on('disconnect', () => {
+//     console.log('A user disconnected:', socket.id);
+//   });
+// });
+
+httpServer.listen(port, () => console.log(`Server is running on port ${port}`));
   
 //     // Handle starting a quiz
 //     socket.on('start-quiz', (quizId) => {

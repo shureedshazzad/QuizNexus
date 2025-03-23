@@ -67,7 +67,7 @@ const viewAllCreatedQuizes = asyncHandler(async (req, res) => {
 const viewQuizDetails = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const quiz = await Quiz.findById(id);
+  const quiz = await Quiz.findById(id).populate('leaderboard.user_id', 'userName avatar');
 
   if (!quiz) {
       res.status(404);
@@ -165,9 +165,9 @@ const setStartQuizEndQuiz = asyncHandler(async (req, res) => {
 // @access  Private
 
 const joinQuiz = asyncHandler(async (req, res) => {
-  const { userId, quizCode } = req.body;
+  const { user_id, quizCode } = req.body;
 
-  if (!userId) {
+  if (!user_id) {
     return res.status(404).json({ message: "User not found" });
   }
 
@@ -182,30 +182,24 @@ const joinQuiz = asyncHandler(async (req, res) => {
   }
 
   // Check if the user is the quiz creator
-  if (userId === quiz.user_id) {
+  if (user_id === quiz.user_id) {
     return res.status(400).json({ message: "You are the quiz creator. So you should not participate" });
   }
 
-  // Check if the quiz has started
-  if (new Date() < quiz.quiz_start_time) {
-    return res.status(400).json({ message: "Please wait. Quiz not started yet" });
-  }
 
-  // Check if the quiz has ended
-  if (new Date() >= quiz.quiz_end_time) {
+  if (quiz.quiz_end_time !== null && new Date() >= new Date(quiz.quiz_end_time)) {
     return res.status(400).json({ message: "Quiz has already ended" });
   }
-
   // Check if the participant is already in the quiz
-  const isParticipant = quiz.participants.some(participant => participant.equals(userId));
+  const isParticipant = quiz.participants.some(participant => participant.equals(user_id));
 
   if (!isParticipant) {
     // Add the participant to the participants array
-    quiz.participants.push(userId);
+    quiz.participants.push(user_id);
 
     // Add the participant to the leaderboard with initial score and currentQuestionIndex
     quiz.leaderboard.push({
-      user_id: userId,
+      user_id: user_id,
       score: 0, // Initial score
       currentQuestionIndex: 0, // Start from the first question
     });
@@ -217,6 +211,8 @@ const joinQuiz = asyncHandler(async (req, res) => {
       quizId: quiz._id,
       quizName: quiz.quiz_name,
       quizDescription: quiz.quiz_description,
+      quiz_start_time: quiz.quiz_start_time,
+      quiz_end_time: quiz.quiz_end_time,
     });
   }
   else{
@@ -224,6 +220,7 @@ const joinQuiz = asyncHandler(async (req, res) => {
   }
 
 });
+
 
 // @desc    Handle fetching the current question or submitting an answer
 // @route   POST /api/quizes/:id/handle-question

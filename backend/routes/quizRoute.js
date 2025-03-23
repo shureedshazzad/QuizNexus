@@ -9,7 +9,7 @@ import {
     showLeaderBoards,
     viewQuizDetails,
     deleteQuiz,
-    viewAllCreatedQuizes
+    viewAllCreatedQuizes,
 } from "../controllers/quizController.js";
 import { protect} from "../middleware/authMiddleware.js";
 

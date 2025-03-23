@@ -61,7 +61,19 @@ export const quizesApiSlice = apiSlice.injectEndpoints({
                 },
             }),
             invalidatesTags: ['Quiz'], 
-        })
+        }),
+        joinQuiz: builder.mutation({
+            query: (data) => ({
+                url: `${QUIZES_URL}/join`,
+                method: 'POST',
+                body: data,
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }),
+            invalidatesTags: ['Quiz'], // Invalidate the 'Quiz' cache tag when a quiz is created
+        }),
     }),
 });
 
@@ -71,5 +83,7 @@ export const {
   useViewQuizQuery,
   useDeleteQuizMutation,
   useGetAllCreatedQuizesQuery,
-  useSetStartTimeEndTimeOfQuizMutation
+  useSetStartTimeEndTimeOfQuizMutation,
+  useJoinQuizMutation,
+
 } = quizesApiSlice;

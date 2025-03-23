@@ -63,9 +63,9 @@ const registerUser = asyncHandler(async (req, res) => {
 
     let isAdmin = false;
 
-    if (email === process.env.TRANSACTION_MAIL) {
-        isAdmin = true;
-    }
+    // if (email === process.env.TRANSACTION_MAIL) {
+    //     isAdmin = true;
+    // }
 
     const user = await User.create({
         userName,

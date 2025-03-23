@@ -58,9 +58,6 @@ function Features() {
               </div>
               <h4 className="mb-3 mt-2">Join Quizzes</h4>
               <p className="mb-4">Participate in a wide variety of exciting quizzes to test your knowledge on various topics. With every quiz, challenge yourself and improve your skills in a fun and engaging way.</p>
-              <button style={buttonStyle} onMouseOver={(e) => e.target.style.backgroundColor = buttonHoverStyle.backgroundColor} onMouseOut={(e) => e.target.style.backgroundColor = buttonStyle.backgroundColor}>
-                Try Now
-              </button>
             </div>
           </div>
 
@@ -74,16 +71,6 @@ function Features() {
     <p className="mb-4">
       Create and design your own quizzes to challenge others. Customize questions, and create quizzes based on your interests.
     </p>
-    
-    <Link to="/create-quiz" style={{ textDecoration: 'none' }}>
-      <button 
-        style={buttonStyle} 
-        onMouseOver={(e) => e.target.style.backgroundColor = buttonHoverStyle.backgroundColor} 
-        onMouseOut={(e) => e.target.style.backgroundColor = buttonStyle.backgroundColor}
-      >
-        Try Now
-      </button>
-    </Link>
   </div>
 </div>
 
@@ -96,9 +83,6 @@ function Features() {
               </div>
               <h4 className="mb-3 mt-2">Challenge with AI</h4>
               <p className="mb-4">Take your skills to the next level by challenging AI-powered opponents. Grow your expertise as you advance through different levels of difficulty in the AI challenges.</p>
-              <button style={buttonStyle} onMouseOver={(e) => e.target.style.backgroundColor = buttonHoverStyle.backgroundColor} onMouseOut={(e) => e.target.style.backgroundColor = buttonStyle.backgroundColor}>
-                Try Now
-              </button>
             </div>
           </div>
         </div>

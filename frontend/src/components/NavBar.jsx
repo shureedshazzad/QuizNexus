@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLogoutMutation } from '../slices/usersApiSlice';
 import { logout } from '../slices/authSlice';
-import { FaHome, FaPlayCircle, FaPlusCircle, FaRobot, FaSignInAlt, FaUser, FaSignOutAlt, FaClipboardList } from 'react-icons/fa'; // Import icons
+import { FaHome, FaPlayCircle, FaPlusCircle, FaRobot, FaSignInAlt, FaUser, FaSignOutAlt, FaClipboardList } from 'react-icons/fa';
+import JoinQuizModal from './JoinQuizModal'; // Import the JoinQuizModal component
 import './navDesign.css';
 
 const logoStyle = {
@@ -14,8 +15,8 @@ const logoStyle = {
 const logoTextStyle = {
   fontSize: "24px",
   fontWeight: "700",
-  color: "#FFBF1A", // Highlight color for the text
-  marginLeft: "10px", // Space between the logo and the text
+  color: "#FFBF1A",
+  marginLeft: "10px",
   display: "inline-block",
 };
 
@@ -24,9 +25,9 @@ function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
   const [logoutApiCall] = useLogoutMutation();
   const [dropdownOpen, setDropdownOpen] = useState(false); // For dropdown visibility
+  const [showJoinQuizModal, setShowJoinQuizModal] = useState(false); // State to control modal visibility
 
   const logoutHandler = async () => {
     const confirmed = window.confirm("Are you sure you want to sign out?");
@@ -48,7 +49,7 @@ function Navbar() {
         <div style={{ marginTop: '5px' }}>
           <img src="/images/logo.png" alt="Logo" className="mr-2" style={logoStyle} />
         </div>
-        <div style={logoTextStyle}>QuizNexus</div> {/* Adding the QuizNexus text */}
+        <div style={logoTextStyle}>QuizNexus</div>
       </Link>
 
       <button type="button" className="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -61,9 +62,14 @@ function Navbar() {
             <FaHome className="nav-icon" /> Home
           </Link>
 
-          <Link to='/join' className="nav-item nav-link">
+          {/* Join a Quiz Button */}
+          <button
+            className="nav-item nav-link btn btn-link"
+            onClick={() => setShowJoinQuizModal(true)} // Open the modal
+            style={{ border: 'none', background: 'transparent', textDecoration: 'none' }}
+          >
             <FaPlayCircle className="nav-icon" /> Join a Quiz
-          </Link>
+          </button>
 
           <Link to='/create-quiz' className="nav-item nav-link">
             <FaPlusCircle className="nav-icon" /> Create a Quiz
@@ -82,7 +88,7 @@ function Navbar() {
                 style={{ position: 'relative', border: 'none', background: 'transparent' }}
               >
                 <img
-                  src={userInfo.avatar || "/images/default-avatar.png"} // User avatar or default
+                  src={userInfo.avatar || "/images/default-avatar.png"}
                   alt="User Avatar"
                   className="rounded-circle"
                   style={{ width: '40px', height: '40px', objectFit: 'cover', border: '2px solid #FFBF1A' }}
@@ -99,7 +105,7 @@ function Navbar() {
                     <FaSignOutAlt className="me-2" /> 
                     Logout
                   </button>
-                  <Link to = "/view-all-created-quizes" className="dropdown-item">
+                  <Link to="/view-all-created-quizes" className="dropdown-item">
                      <FaClipboardList className="me-2" /> My Quizzes
                   </Link>
                 </div>
@@ -112,6 +118,12 @@ function Navbar() {
           )}
         </div>
       </div>
+
+      {/* Join Quiz Modal */}
+      <JoinQuizModal
+        show={showJoinQuizModal}
+        onHide={() => setShowJoinQuizModal(false)} // Close the modal
+      />
     </nav>
   );
 }
