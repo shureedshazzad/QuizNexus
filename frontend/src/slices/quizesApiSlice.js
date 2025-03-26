@@ -74,6 +74,17 @@ export const quizesApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Quiz'], // Invalidate the 'Quiz' cache tag when a quiz is created
         }),
+        handleQuiz: builder.mutation({
+            query: ( {data,id} ) => ({
+                url: `${QUIZES_URL}/handle-question/${id}`,
+                method: 'POST',
+                body: data,
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+        })
     }),
 });
 
@@ -85,5 +96,6 @@ export const {
   useGetAllCreatedQuizesQuery,
   useSetStartTimeEndTimeOfQuizMutation,
   useJoinQuizMutation,
+  useHandleQuizMutation
 
 } = quizesApiSlice;

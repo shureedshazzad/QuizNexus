@@ -27,6 +27,10 @@ const questionSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    isAnswerd : {
+        type : Boolean,
+        default : false
+    }
 });
 
 const quizSchema = new mongoose.Schema({
@@ -66,11 +70,6 @@ const quizSchema = new mongoose.Schema({
     quiz_end_time: {
         type: Date, // Timestamp for when the quiz ends
         default: null, // Initially null, set when the quiz ends
-    },
-    status: {
-        type: String,
-        enum: ["pending", "active", "completed"],
-        default: "pending",
     },
     leaderboard: [
         {

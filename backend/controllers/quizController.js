@@ -125,30 +125,21 @@ const setStartQuizEndQuiz = asyncHandler(async (req, res) => {
   if (!quiz) {
     return res.status(404).json({ message: "Quiz not found" });
   }
-  if (quiz.status === "active") {
-    return res.status(400).json({ message: "Quiz is already active" });
-  }
-
-  // Check if the quiz has already started
-  if (quiz.status === 'completed') {
-    return res.status(400).json({ message: "Quiz has already ended" });
-  }
 
   try {
     const startTime = new Date();
-    startTime.setSeconds(startTime.getSeconds() + 60); // Add 2 minute
+    startTime.setSeconds(startTime.getSeconds() + 60); // Add 1 minute before initialization
     const quiz_duration_in_second = quiz.quiz_duration * 60; // Convert minutes to seconds
     const endTime = new Date(startTime.getTime() + quiz_duration_in_second * 1000); // Add total_duration in milliseconds
 
     quiz.quiz_start_time = startTime;
     quiz.quiz_end_time = endTime;
-    quiz.status = "active";
 
      // Shuffle the questions before starting the quiz
     quiz.shuffleQuestions();
-
     // Save the quiz with the shuffled question order
-    await quiz.save();
+    const updatedQuiz = await quiz.save();
+    console.log(updatedQuiz)
 
     res.status(200).json({
       message: "Quiz started successfully",
@@ -236,7 +227,7 @@ const handleQuestion = asyncHandler(async (req, res) => {
   }
 
   // Check if the quiz has started
-  if (quiz.quiz_start_time === null) {
+  if (quiz.quiz_start_time === null && quiz.quiz_end_time === null) {
     return res.status(400).json({ message: "Quiz has not started yet" });
   }
 
@@ -267,18 +258,8 @@ const handleQuestion = asyncHandler(async (req, res) => {
   // Get the current question using the questionOrder array
   const currentQuestion = quiz.questions[quiz.questionOrder[currentQuestionIndex]];
 
-  // If no answer is provided, return the current question
-  if (!answer) {
-    return res.status(200).json({
-      currentQuestion,
-      currentQuestionIndex,
-    });
-  }
-
-  // If an answer is provided, handle answer submission
-  // Check if the participant is answering the current question
-  if (currentQuestionIndex !== participant.currentQuestionIndex) {
-    return res.status(400).json({ message: "You must answer the current question before proceeding" });
+  if (answer !== null && answer !== undefined) {
+    currentQuestion.isAnswerd = true;
   }
 
   // Check if the answer is correct

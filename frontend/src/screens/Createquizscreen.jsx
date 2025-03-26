@@ -35,6 +35,15 @@ const CreateQuizScreen = () => {
     setQuestions(updatedQuestions);
   };
 
+    // Handle score change
+    const handleScoreChange = (value) => {
+      const updatedQuestions = [...questions];
+      updatedQuestions[currentQuestionIndex].score = Math.max(1, value); // Ensures a minimum score of 1
+      setQuestions(updatedQuestions);
+    };
+  
+  
+
   // Handle image upload
   const handleImageUpload = (file) => {
     if (file) {
@@ -117,7 +126,13 @@ const CreateQuizScreen = () => {
                     <option key={index} value={option}>Option {index + 1}</option>
                   ))}
                 </select>
+
+                 {/* 🆕 Score Field */}
+                 <input type="number" className="form-control mb-2" min="1" placeholder="Score" value={questions[currentQuestionIndex].score} onChange={(e) => handleScoreChange(parseInt(e.target.value))} required />
+
               </div>
+
+              
               
               <div className="d-flex justify-content-between">
                 <button type="button" className="btn btn-secondary" disabled={currentQuestionIndex === 0} onClick={() => setCurrentQuestionIndex(currentQuestionIndex - 1)}>Previous</button>

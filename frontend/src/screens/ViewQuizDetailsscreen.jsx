@@ -135,6 +135,7 @@ const ViewQuizDetailsScreen = () => {
         localStorage.removeItem('quizStartTime');
         localStorage.removeItem('quizEndTime');
         clearInterval(interval);
+        navigate('/');
       }
     }, 1000);
 
@@ -236,9 +237,21 @@ const ViewQuizDetailsScreen = () => {
               </div>
               {/* Start Quiz & Delete Buttons */}
               <div className="d-flex justify-content-between mt-4">
-                <button className="btn btn-success" onClick={handleStartQuiz} disabled={setStartTimeEndTimeLoading}>
-                  {setStartTimeEndTimeLoading ? "Starting..." : "Start Quiz"}
-                </button>
+
+              <div className="text-center mt-3">
+                {quizData.quiz.quiz_start_time === null || quizData.quiz.quiz_end_time === null ? (
+                  <button className="btn btn-success" onClick={handleStartQuiz} disabled={setStartTimeEndTimeLoading}>
+                    {setStartTimeEndTimeLoading ? "Starting..." : "Start Quiz"}
+                  </button>
+                ) : Date.now() >= new Date(quizData.quiz.quiz_start_time).getTime() && Date.now() < new Date(quizData.quiz.quiz_end_time).getTime() ? (
+                  <span className="badge bg-success fs-5">✅ Quiz is Active</span>
+                ) : Date.now() > new Date(quizData.quiz.quiz_end_time).getTime() ? (
+                  <>
+                    <button className="btn btn-primary ms-1">Show Results</button>
+                  </>
+                ) : null}
+              </div>
+
                 <button className="btn btn-danger" onClick={handleDelete} disabled={deleteLoading}>
                   {deleteLoading ? "Deleting..." : "Delete Quiz"}
                 </button>
