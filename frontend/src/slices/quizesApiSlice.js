@@ -75,7 +75,7 @@ export const quizesApiSlice = apiSlice.injectEndpoints({
             invalidatesTags: ['Quiz'], // Invalidate the 'Quiz' cache tag when a quiz is created
         }),
         handleQuiz: builder.mutation({
-            query: ( {data,id} ) => ({
+            query: ( {id,data} ) => ({
                 url: `${QUIZES_URL}/handle-question/${id}`,
                 method: 'POST',
                 body: data,

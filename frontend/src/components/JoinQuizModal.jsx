@@ -25,8 +25,9 @@ const JoinQuizModal = ({ show, onHide }) => {
       setLoading(true);
       const response = await joinQuiz({ user_id: userInfo._id,quizCode}).unwrap();
       console.log('Joined quiz successfully:', response);
+      const quizId = response.quizId;
       toast.success('You have joined the quiz!');
-      navigate('/join-quiz');
+      navigate(`/answer-quiz/${quizId}`);
       onHide(); // Close the modal after successful joi
     } catch (err) {
       console.error('Failed to join quiz:', err);

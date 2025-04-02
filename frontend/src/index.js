@@ -24,7 +24,7 @@ import Changepasswordscreen from './screens/Changepasswordscreen.jsx';
 import Createquizscreen from './screens/Createquizscreen.jsx';
 import ViewQuizDetailsScreen from './screens/ViewQuizDetailsscreen.jsx';
 import Viewallcreatedquizes from './screens/Viewallcreatedquizes.jsx';
-import Joinquiz from './screens/Joinquiz.jsx';
+import AnswerQuiz from './screens/AnswerQuiz.jsx';
 
 
 const router = createBrowserRouter(
@@ -43,7 +43,7 @@ const router = createBrowserRouter(
           <Route path='/create-quiz' element={<Createquizscreen/>}/>
           <Route path='/view-quiz/:id' element={<ViewQuizDetailsScreen/>}/>
           <Route path='/view-all-created-quizes' element={<Viewallcreatedquizes/>}/>
-          <Route path='/join-quiz' element={<Joinquiz/>}/>
+          <Route path='/answer-quiz/:id' element={<AnswerQuiz/>}/>
       </Route>
 
 

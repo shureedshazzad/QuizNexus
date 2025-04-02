@@ -1,5 +1,4 @@
 import Quiz from "../models/quizModel.js";
-import User from "../models/userModel.js";
 import asyncHandler from "../middleware/asyncHandler.js";
 import { v4 as uuidv4 } from "uuid";
 
@@ -135,8 +134,6 @@ const setStartQuizEndQuiz = asyncHandler(async (req, res) => {
     quiz.quiz_start_time = startTime;
     quiz.quiz_end_time = endTime;
 
-     // Shuffle the questions before starting the quiz
-    quiz.shuffleQuestions();
     // Save the quiz with the shuffled question order
     const updatedQuiz = await quiz.save();
     console.log(updatedQuiz)
@@ -197,13 +194,23 @@ const joinQuiz = asyncHandler(async (req, res) => {
 
     // Save the updated quiz
     await quiz.save();
+
+      // Retrieve the participant's leaderboard entry
+      const participantEntry = quiz.leaderboard.find(entry => entry.user_id.toString() === user_id.toString());
+      if (!participantEntry) {
+        return res.status(500).json({ message: "Error retrieving quiz data" });
+      }
+
+
+
     res.status(200).json({
       message: "Joined quiz successfully",
       quizId: quiz._id,
-      quizName: quiz.quiz_name,
-      quizDescription: quiz.quiz_description,
-      quiz_start_time: quiz.quiz_start_time,
-      quiz_end_time: quiz.quiz_end_time,
+      // quizName: quiz.quiz_name,
+      // quizDescription: quiz.quiz_description,
+      // quiz_start_time: quiz.quiz_start_time,
+      // quiz_end_time: quiz.quiz_end_time,
+      questionOrder: participantEntry.questionOrder, // Retrieve question order for this user
     });
   }
   else{
@@ -217,50 +224,55 @@ const joinQuiz = asyncHandler(async (req, res) => {
 // @route   POST /api/quizes/:id/handle-question
 // @access  Private
 const handleQuestion = asyncHandler(async (req, res) => {
-  const { quizId } = req.params;
-  const { userId, answer } = req.body; // `answer` is optional
+  const { id } = req.params;
+  const { userId, answer } = req.body; // `answer` is optional, it may be null
 
-  const quiz = await Quiz.findById(quizId);
+  const quiz = await Quiz.findById(id);
 
-  if (!quiz) {
-    return res.status(404).json({ message: "Quiz not found" });
+  if (!quiz || !userId) {
+    return res.status(404).json({ message: "Quiz or userId not found" });
   }
 
   // Check if the quiz has started
-  if (quiz.quiz_start_time === null && quiz.quiz_end_time === null) {
+  if (quiz.quiz_start_time === null || quiz.quiz_end_time === null) {
     return res.status(400).json({ message: "Quiz has not started yet" });
   }
 
   // Check if the quiz has ended
-  if (new Date() >= quiz.quiz_end_time) {
+  if (new Date() >= new Date(quiz.quiz_end_time)) {
     return res.status(400).json({ message: "Quiz has already ended" });
   }
 
   // Find the participant in the leaderboard
-  const participant = quiz.leaderboard.find(entry =>
-    entry.user_id.equals(userId)
-  );
+  const participant = quiz.leaderboard.find(entry => entry.user_id.equals(userId));
 
   if (!participant) {
     return res.status(404).json({ message: "Participant not found in the quiz" });
   }
 
-  // Get the current question index for the participant
-  const currentQuestionIndex = participant.currentQuestionIndex;
+  // Get the participant's question order
+  const { questionOrder, currentQuestionIndex } = participant;
 
   // Check if the participant has completed all questions
-  if (currentQuestionIndex >= quiz.questions.length) {
+  if (currentQuestionIndex >= questionOrder.length) {
     return res.status(200).json({
       message: "You have completed the quiz",
     });
   }
 
   // Get the current question using the questionOrder array
-  const currentQuestion = quiz.questions[quiz.questionOrder[currentQuestionIndex]];
+  const currentQuestion = quiz.questions[questionOrder[currentQuestionIndex]];
 
+  if (!currentQuestion) {
+    return res.status(500).json({ message: "Error retrieving question" });
+  }
+
+  // If an answer is provided, mark the question as answered
   if (answer !== null && answer !== undefined) {
     currentQuestion.isAnswerd = true;
   }
+
+  const corr = currentQuestion.correctAnswer;
 
   // Check if the answer is correct
   if (answer === currentQuestion.correctAnswer) {
@@ -276,10 +288,11 @@ const handleQuestion = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     message: "Answer submitted successfully",
+    correctAnswer: corr,
     currentQuestionIndex: participant.currentQuestionIndex,
+    l: questionOrder.length,
   });
 });
-
 
 // @desc    End a quiz and determine winners
 // @route   POST /api/quizes/:id/end

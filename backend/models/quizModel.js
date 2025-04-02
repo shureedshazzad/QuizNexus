@@ -84,6 +84,14 @@ const quizSchema = new mongoose.Schema({
           currentQuestionIndex: {
             type: Number,
             default: 0,
+          },
+          questionOrder: {  // Added this field for each participant
+            type: [Number],
+            default: function() {
+                // Generate default order when participant joins
+                return Array.from({length: this.parent().questions.length}, (_, i) => i)
+                    .sort(() => Math.random() - 0.5);
+            }
           }
         },
     ],
@@ -93,22 +101,11 @@ const quizSchema = new mongoose.Schema({
             ref: "User",
         },
     ],
-    questionOrder: {
-        type: [Number], // Array of question indices
-        default: function () {
-          return this.questions.map((_, index) => index); // Default order is the order of questions in the array
-        },
-    },
+
 }, {
     timestamps: true, // Adds createdAt and updatedAt fields
 });
 
-quizSchema.methods.shuffleQuestions = function () {
-    this.questionOrder = this.questions
-      .map((_, index) => index)
-      .sort(() => Math.random() - 0.5);
-    return this;
-  };
 
 const Quiz = mongoose.model("Quiz", quizSchema);
 export default Quiz;
