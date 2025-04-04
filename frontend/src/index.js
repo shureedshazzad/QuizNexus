@@ -25,6 +25,8 @@ import Createquizscreen from './screens/Createquizscreen.jsx';
 import ViewQuizDetailsScreen from './screens/ViewQuizDetailsscreen.jsx';
 import Viewallcreatedquizes from './screens/Viewallcreatedquizes.jsx';
 import AnswerQuiz from './screens/AnswerQuiz.jsx';
+import Showwinner from './screens/Showleaderboard.jsx';
+import { Showleaderboard } from './screens/Showleaderboard.jsx';
 
 
 const router = createBrowserRouter(
@@ -44,6 +46,7 @@ const router = createBrowserRouter(
           <Route path='/view-quiz/:id' element={<ViewQuizDetailsScreen/>}/>
           <Route path='/view-all-created-quizes' element={<Viewallcreatedquizes/>}/>
           <Route path='/answer-quiz/:id' element={<AnswerQuiz/>}/>
+          <Route path='/show-leaderboard/:id' element={<Showleaderboard/>}/>
       </Route>
 
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useViewQuizQuery, useHandleQuizMutation } from "../slices/quizesApiSlice";
+import { useViewQuizQuery, useHandleQuizMutation, useUpdateExitTimeMutation } from "../slices/quizesApiSlice";
 import Loader from '../components/Loader';
 import { toast } from 'react-toastify';
 import { FaClock,FaCheck,FaTimes } from "react-icons/fa";
@@ -15,6 +15,7 @@ const AnswerQuiz = () => {
   // API Hooks
   const [handleQuiz] = useHandleQuizMutation();
   const { data: quizData, isLoading, isError } = useViewQuizQuery(id,{pollingInterval: 5000});;
+  const [updateExitTime] = useUpdateExitTimeMutation();
 
   // Component State
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -49,8 +50,6 @@ const AnswerQuiz = () => {
   // Fetch participant data from leaderboard
   useEffect(() => {
     if (quizData?.quiz && userInfo) {
-      console.log(quizData.quiz.leaderboard);
-      console.log(userInfo._id);
       const foundParticipant = quizData.quiz.leaderboard.find(entry => entry.user_id._id === userInfo._id);
       if (!foundParticipant) {
         toast.error("You are not a participant in this quiz!");
@@ -101,7 +100,7 @@ const AnswerQuiz = () => {
         localStorage.removeItem('quizEndTime');
         localStorage.removeItem('quizCompleted');
         clearInterval(interval);
-        navigate('/');
+        navigate(`/show-leaderboard/${id}`);
       }
     }, 1000);
 
@@ -122,17 +121,27 @@ const AnswerQuiz = () => {
       setCorrectOption(correctAnswer);
       setIsAnswered(true);
       if (response.currentQuestionIndex === response.l) {
-        setTimeout(() => {
-          toast.success("Quiz completed!");
-          setCurrentQuestionIndex(response.currentQuestionIndex)
-          setIsAnswered(false);
-          setSelectedOption(null);
-          setCorrectOption(null);
-          setQuizCompleted(true);
-          localStorage.setItem("quizCompleted", JSON.stringify(true));
-       
-        },2000)
-        return
+        try {
+          await updateExitTime({
+            id: id,
+            data: { userId: userInfo._id }
+          }).unwrap();   
+          setTimeout(() => {
+            toast.success("You have completed the Quiz");
+            setCurrentQuestionIndex(response.currentQuestionIndex)
+            setIsAnswered(false);
+            setSelectedOption(null);
+            setCorrectOption(null);
+            setQuizCompleted(true);
+            localStorage.setItem("quizCompleted", JSON.stringify(true));
+         
+          },2000)
+
+        } catch (error) {
+          toast.error("Failed to record quiz completion");
+          console.error(error);
+        }
+        return;
       }
       setTimeout(() => {
         setCurrentQuestionIndex(response.currentQuestionIndex);

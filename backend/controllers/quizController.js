@@ -185,11 +185,22 @@ const joinQuiz = asyncHandler(async (req, res) => {
     // Add the participant to the participants array
     quiz.participants.push(user_id);
 
+
+     // Initialize questionStatus array with all questions marked as unanswered
+     const questionStatus = quiz.questions.map((_, index) => ({
+      questionIndex: index,
+      isAnswered: false,
+      isCorrect: false
+    }));
+
+
     // Add the participant to the leaderboard with initial score and currentQuestionIndex
     quiz.leaderboard.push({
       user_id: user_id,
       score: 0, // Initial score
-      currentQuestionIndex: 0, // Start from the first question
+      currentQuestionIndex: 0,
+      questionStatus: questionStatus,
+      quizEntryTime: new Date()
     });
 
     // Save the updated quiz
@@ -201,15 +212,9 @@ const joinQuiz = asyncHandler(async (req, res) => {
         return res.status(500).json({ message: "Error retrieving quiz data" });
       }
 
-
-
     res.status(200).json({
       message: "Joined quiz successfully",
       quizId: quiz._id,
-      // quizName: quiz.quiz_name,
-      // quizDescription: quiz.quiz_description,
-      // quiz_start_time: quiz.quiz_start_time,
-      // quiz_end_time: quiz.quiz_end_time,
       questionOrder: participantEntry.questionOrder, // Retrieve question order for this user
     });
   }
@@ -253,32 +258,46 @@ const handleQuestion = asyncHandler(async (req, res) => {
   // Get the participant's question order
   const { questionOrder, currentQuestionIndex } = participant;
 
+
   // Check if the participant has completed all questions
   if (currentQuestionIndex >= questionOrder.length) {
     return res.status(200).json({
       message: "You have completed the quiz",
     });
-  }
-
+  }  
   // Get the current question using the questionOrder array
+  const questionIndex = questionOrder[currentQuestionIndex]
   const currentQuestion = quiz.questions[questionOrder[currentQuestionIndex]];
 
   if (!currentQuestion) {
     return res.status(500).json({ message: "Error retrieving question" });
   }
 
-  // If an answer is provided, mark the question as answered
+  // Process answer if provided
   if (answer !== null && answer !== undefined) {
-    currentQuestion.isAnswerd = true;
-  }
+    // Find or create question status entry
+    let questionStatus = participant.questionStatus.find(
+      qs => qs.questionIndex === questionIndex
+    );
+    
+    if (!questionStatus) {
+      questionStatus = {
+        questionIndex,
+        isAnswered: true,
+        isCorrect: answer === currentQuestion.correctAnswer
+      };
+      participant.questionStatus.push(questionStatus);
+    } else {
+      questionStatus.isAnswered = true;
+      questionStatus.isCorrect = answer === currentQuestion.correctAnswer;
+    }
 
+    // Update score if correct
+    if (questionStatus.isCorrect) {
+      participant.score += currentQuestion.score;
+    }
+  }
   const corr = currentQuestion.correctAnswer;
-
-  // Check if the answer is correct
-  if (answer === currentQuestion.correctAnswer) {
-    // Update the participant's score
-    participant.score += currentQuestion.score;
-  }
 
   // Move to the next question
   participant.currentQuestionIndex += 1;
@@ -294,67 +313,37 @@ const handleQuestion = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    End a quiz and determine winners
-// @route   POST /api/quizes/:id/end
+
+// @desc    Update quiz exit time for a particular participant
+// @route   POST/api/quizes/update-time/:id
 // @access  Private
-
-const endQuiz = asyncHandler(async (req,res) => {
-  const { quizId } = req.params;
-  const quiz = await Quiz.findById(quizId);
+const updatequizExitTime = asyncHandler(async (req, res) => {
+  const { id } = req.params; // Quiz ID
+  const { userId } = req.body; // Should receive user ID 
+  const quiz = await Quiz.findById(id);
   if (!quiz) {
-    res.status(404).json("Quiz not found");
-    return; 
+    return res.status(404).json({ message: "Quiz not found" });
   }
 
-  if(new Date() >= quiz.quiz_end_time)
-  {
-      // Set the quiz status to "completed"
-      quiz.status = "completed";
+  // Find the participant in the leaderboard
+  const participantIndex = quiz.leaderboard.findIndex(
+    entry => entry.user_id.toString() === userId.toString()
+  );
 
-      quiz.leaderboard.sort((a, b) => b.score - a.score); // Sort by score in descending order
-      quiz.winners = quiz.leaderboard
-      .slice(0, Math.min(3, quiz.leaderboard.length)) // Take the top 3 or fewer if less than 3
-      .map(entry => entry.user_id); // Map to user IDs
-
-      await quiz.save();
-
-      res.status(200).json({
-        message: "Quiz ended successfully",
-      });
+  
+  if (participantIndex === -1) {
+    return res.status(404).json({ message: "Participant not found in this quiz" });
   }
+  // Update the exit time
+  quiz.leaderboard[participantIndex].quizExitTime = new Date();
+  await quiz.save();
 
-})
-
-// @desc    Show LeaderBoards and winners
-// @route   POST /api/quizes/:id/winners
-// @access  Private
-
-const showLeaderBoards = asyncHandler(async (req, res) => {
-  const { quizId } = req.params;
-
-  // Find the quiz and populate the leaderboard and winners
-  const quiz = await Quiz.findById(quizId)
-    .populate("leaderboard.user_id","avatar userName") // Populate user details including total_score
-    .populate("winners", "avatar userName"); // Populate winner details
-
-  if (!quiz) {
-    res.status(404);
-    throw new Error("Quiz not found");
-  }
-
-  // Check if the quiz has ended
-  if (quiz.status !== "completed") {
-    res.status(400);
-    throw new Error("Quiz not completed yet");
-  }
-
-
-  res.status(200).json({
-    message: "Leaderboard and winners fetched successfully",
-    leaderboard: quiz.leaderboard,
-    winners: quiz.winners,
+  res.status(200).json({ 
+    success: true,
+    message: "Quiz exit time updated successfully",
+    quizExitTime: quiz.leaderboard[participantIndex].quizExitTime
   });
-});
+})
 
 
 export {
@@ -362,11 +351,10 @@ export {
   setStartQuizEndQuiz,
   joinQuiz,
   handleQuestion,
-  endQuiz,
-  showLeaderBoards,
   viewQuizDetails,
   deleteQuiz,
-  viewAllCreatedQuizes
+  viewAllCreatedQuizes,
+  updatequizExitTime
 };
 
 

@@ -84,6 +84,17 @@ export const quizesApiSlice = apiSlice.injectEndpoints({
                     'Content-Type': 'application/json',
                 },
             })
+        }),
+        updateExitTime: builder.mutation({
+            query: ({ id, data }) => ({
+                url: `${QUIZES_URL}/updateExitTime/${id}`,
+                method: 'POST',
+                body: data,
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
         })
     }),
 });
@@ -96,6 +107,6 @@ export const {
   useGetAllCreatedQuizesQuery,
   useSetStartTimeEndTimeOfQuizMutation,
   useJoinQuizMutation,
-  useHandleQuizMutation
-
+  useHandleQuizMutation,
+  useUpdateExitTimeMutation
 } = quizesApiSlice;

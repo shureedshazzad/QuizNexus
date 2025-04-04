@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate,Link } from "react-router-dom";
 import { useViewQuizQuery, useDeleteQuizMutation, useSetStartTimeEndTimeOfQuizMutation} from "../slices/quizesApiSlice.js";
 import Loader from '../components/Loader';
 import { toast } from 'react-toastify';
+
 
 const ViewQuizDetailsScreen = () => {
   const { id } = useParams();
@@ -135,7 +136,7 @@ const ViewQuizDetailsScreen = () => {
         localStorage.removeItem('quizStartTime');
         localStorage.removeItem('quizEndTime');
         clearInterval(interval);
-        navigate('/');
+        navigate(`/show-leaderboard/${id}`);
       }
     }, 1000);
 
@@ -247,7 +248,9 @@ const ViewQuizDetailsScreen = () => {
                   <span className="badge bg-success fs-5">✅ Quiz is Active</span>
                 ) : Date.now() > new Date(quizData.quiz.quiz_end_time).getTime() ? (
                   <>
-                    <button className="btn btn-primary ms-1">Show Results</button>
+                   <Link to={`/show-leaderboard/${id}`}>
+                   <button className="btn btn-primary ms-1">Show Results</button>
+                   </Link>
                   </>
                 ) : null}
               </div>

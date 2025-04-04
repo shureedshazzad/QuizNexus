@@ -27,10 +27,6 @@ const questionSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    isAnswerd : {
-        type : Boolean,
-        default : false
-    }
 });
 
 const quizSchema = new mongoose.Schema({
@@ -92,13 +88,20 @@ const quizSchema = new mongoose.Schema({
                 return Array.from({length: this.parent().questions.length}, (_, i) => i)
                     .sort(() => Math.random() - 0.5);
             }
+          },
+            questionStatus:[{
+                questionIndex: Number,  // Index in the original questions array
+                isCorrect: Boolean,
+                isAnswered: Boolean,
+          }],
+          quizEntryTime:{
+            type: Date, // Timestamp for when the participant joins the quiz
+            default: null, // Initially null, set when the participant joins the quiz
+          },
+          quizExitTime:{
+            type: Date, // Timestamp for when the participant exits the quiz
+            default: null, // Initially null, set when the participant exits the quiz
           }
-        },
-    ],
-    winners: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
         },
     ],
 

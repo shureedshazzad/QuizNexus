@@ -27,6 +27,7 @@ const JoinQuizModal = ({ show, onHide }) => {
       console.log('Joined quiz successfully:', response);
       const quizId = response.quizId;
       toast.success('You have joined the quiz!');
+      localStorage.removeItem('quizCompleted');
       navigate(`/answer-quiz/${quizId}`);
       onHide(); // Close the modal after successful joi
     } catch (err) {

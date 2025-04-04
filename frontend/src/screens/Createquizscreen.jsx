@@ -92,6 +92,8 @@ const CreateQuizScreen = () => {
       toast.success('Quiz created successfully!');
       const quizId = response.quiz._id; //fetch the quiz id
       console.log(response);
+      localStorage.removeItem('quizStartTime');
+      localStorage.removeItem('quizEndTime');
       navigate(`/view-quiz/${quizId}`);
     } catch (err) {
       toast.error(err?.data?.message || 'Error creating quiz');
