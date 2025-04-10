@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { validate } from "uuid";
 
 const questionSchema = new mongoose.Schema({
     description: {
@@ -18,6 +19,14 @@ const questionSchema = new mongoose.Schema({
             },
             message: "There must be exactly 4 options for each question.",
         },
+        validate:{
+            validator: function (options) {
+                 // Check if all options are unique (case-sensitive)
+                 const uniqueOptions = new Set(options);
+                 return uniqueOptions.size === options.length;
+            },
+            message: "All options must be unique for each question.",
+        }
     },
     correctAnswer: {
         type: String,

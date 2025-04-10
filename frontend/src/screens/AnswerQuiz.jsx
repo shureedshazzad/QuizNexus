@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useViewQuizQuery, useHandleQuizMutation, useUpdateExitTimeMutation } from "../slices/quizesApiSlice";
+import { useViewQuizQuery, useHandleQuizMutation, useUpdateExitTimeMutation,usePopParticipantMutation} from "../slices/quizesApiSlice";
 import Loader from '../components/Loader';
 import { toast } from 'react-toastify';
 import { FaClock,FaCheck,FaTimes } from "react-icons/fa";
@@ -12,10 +12,15 @@ const AnswerQuiz = () => {
   const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.auth);
 
+
+  // Add this near your other state declarations
+  const [tabSwitchWarnings, setTabSwitchWarnings] = useState(0); 
+
   // API Hooks
   const [handleQuiz] = useHandleQuizMutation();
   const { data: quizData, isLoading, isError } = useViewQuizQuery(id,{pollingInterval: 5000});;
   const [updateExitTime] = useUpdateExitTimeMutation();
+  const [popPartcipant] = usePopParticipantMutation();
 
   // Component State
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -29,6 +34,8 @@ const AnswerQuiz = () => {
   const [quizCompleted, setQuizCompleted] = useState(() => {
     return JSON.parse(localStorage.getItem("quizCompleted")) || false;
   });
+
+
 
    // State for tracking quiz timing
   const [quizTimes, setQuizTimes] = useState(() => {
@@ -45,6 +52,64 @@ const AnswerQuiz = () => {
     status: 'pending', // pending, active, completed
     time: 0
   });
+
+
+
+    // //useEffect hook to track the tab switched(It can be changed)
+    // useEffect(() => {
+    //   const handleVisibilityChange = async () => {
+    //     if (document.hidden) {
+    //       try {
+    //         // Immediate disqualification with no warnings
+    //         toast.error(
+    //           <div className="d-flex align-items-center">
+    //           <span style={{ fontSize: '1.5em' }}>👮‍♂️🔍🚫</span>
+    //           <span className="ms-2">
+    //             <b>CHEATING DETECTED!</b> You've been disqualified from the quiz. 
+    //             <span style={{ fontSize: '1.2em' }}> 😠⛔</span>
+    //           </span>
+    //         </div>,
+    //         { 
+    //           autoClose: 8000,
+    //           className: 'shadow-lg',
+    //           bodyClassName: 'bg-danger text-white'
+    //         }
+    //        );
+    //         //remove participant
+    //         await popPartcipant({ 
+    //           id: id,
+    //           data: { userId: userInfo._id }
+    //         }).unwrap();
+            
+    //         // Redirect to home with shame state
+    //        navigate('/', { 
+    //         state: { 
+    //           shameMessage: "You were caught cheating!",
+    //           emoji: "🤥👎"
+    //         } 
+    //       });
+    //       } catch (error) {
+    //         toast.error(
+    //           <div>
+    //             <span style={{ fontSize: '1.5em' }}>⚠️❌</span>
+    //             <span className="ms-2">Failed to process disqualification</span>
+    //           </div>
+    //         );
+    //         console.error("Disqualification error:", error);
+    //       }
+    //     }
+    //   };
+    
+    //     // Only activate if quiz is ongoing
+    //     if (countdown.status === 'active' && !quizCompleted) {
+    //       document.addEventListener('visibilitychange', handleVisibilityChange);
+    //     }
+      
+    //   return () => {
+    //     document.removeEventListener('visibilitychange', handleVisibilityChange);
+    //   };
+    // }, [id, userInfo._id, navigate, countdown.status, quizCompleted,]);
+  
 
 
   // Fetch participant data from leaderboard

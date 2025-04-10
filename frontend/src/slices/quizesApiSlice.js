@@ -1,3 +1,4 @@
+
 import { QUIZES_URL } from "../constant.js";
 import { apiSlice } from "./apiSlice.js";
 
@@ -95,6 +96,17 @@ export const quizesApiSlice = apiSlice.injectEndpoints({
                     'Content-Type': 'application/json',
                 },
             })
+        }),
+        popParticipant: builder.mutation({
+            query: ({id, data}) => ({
+                url: `${QUIZES_URL}/pop-participant/${id}`,
+                method: 'DELETE',
+                body: data,
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
         })
     }),
 });
@@ -108,5 +120,6 @@ export const {
   useSetStartTimeEndTimeOfQuizMutation,
   useJoinQuizMutation,
   useHandleQuizMutation,
-  useUpdateExitTimeMutation
+  useUpdateExitTimeMutation,
+  usePopParticipantMutation
 } = quizesApiSlice;

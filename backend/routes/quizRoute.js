@@ -8,7 +8,8 @@ import {
     viewQuizDetails,
     deleteQuiz,
     viewAllCreatedQuizes,
-    updatequizExitTime
+    updatequizExitTime,
+    popParticipant
 } from "../controllers/quizController.js";
 import { protect} from "../middleware/authMiddleware.js";
 
@@ -20,6 +21,6 @@ router.post("/se/:id", protect, setStartQuizEndQuiz);
 router.post("/join", protect, joinQuiz);
 router.post("/handle-question/:id", protect, handleQuestion);
 router.post("/updateExitTime/:id",protect,updatequizExitTime);
-
+router.delete("/pop-participant/:id",protect,popParticipant);
 
 export default router;

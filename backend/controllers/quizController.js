@@ -219,7 +219,7 @@ const joinQuiz = asyncHandler(async (req, res) => {
     });
   }
   else{
-    return res.status(400).json({ message: "You are already in this quiz" });
+    return res.status(400).json({ message: "You are disqualified from the quiz. You should be ashamed of yourself" });
   }
 
 });
@@ -345,6 +345,32 @@ const updatequizExitTime = asyncHandler(async (req, res) => {
   });
 })
 
+//@desc pop a participant from the leaderboard
+//@route DELETE/api/quizes/pop-participant/:id
+//@access Private
+const popParticipant = asyncHandler(async (req, res) => {
+  const { id } = req.params; // Quiz ID
+  const { userId } = req.body; // Should receive user ID
+  const quiz = await Quiz.findById(id);
+  if (!quiz) {
+    return res.status(404).json({ message: "Quiz not found" });
+  }
+  // Find the participant in the leaderboard
+  const participantIndex = quiz.leaderboard.findIndex(
+    entry => entry.user_id.toString() === userId.toString()
+  );
+  if (participantIndex === -1) {
+    return res.status(404).json({ message: "Participant not found in this quiz" });
+  }
+  // Remove the participant from the leaderboard
+  quiz.leaderboard.splice(participantIndex, 1);
+  await quiz.save();
+  res.status(200).json({
+    success: true,
+    message: "Participant removed from the leaderboard successfully",
+    });
+})
+
 
 export {
   createQuiz,
@@ -354,7 +380,8 @@ export {
   viewQuizDetails,
   deleteQuiz,
   viewAllCreatedQuizes,
-  updatequizExitTime
+  updatequizExitTime,
+  popParticipant
 };
 
 
