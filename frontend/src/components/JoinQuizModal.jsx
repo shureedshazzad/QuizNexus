@@ -32,6 +32,7 @@ const JoinQuizModal = ({ show, onHide }) => {
       // Show final warning before entering quiz
 
       localStorage.removeItem('quizCompleted');
+      localStorage.removeItem('tabSwitchCount');
       navigate(`/answer-quiz/${response.quizId}`);
       onHide();
     } catch (err) {
@@ -54,8 +55,7 @@ const JoinQuizModal = ({ show, onHide }) => {
               <b>Our system detects and automatically disqualifies:</b>
             </p>
             <ul>
-              <li>Tab/window switching during the quiz</li>
-              <li>Attempts to open new browser windows</li>
+              <li>Tab/Window switching more than 3 times during the quiz</li>
             </ul>
             <p className="mb-0">
               <span style={{ fontSize: '1.2em' }}>🔍</span> All activity is monitored and recorded

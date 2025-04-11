@@ -5,7 +5,6 @@ import { useViewQuizQuery, useHandleQuizMutation, useUpdateExitTimeMutation,useP
 import Loader from '../components/Loader';
 import { toast } from 'react-toastify';
 import { FaClock,FaCheck,FaTimes } from "react-icons/fa";
-import { set } from "mongoose";
 
 const AnswerQuiz = () => {
   const { id } = useParams();
@@ -13,8 +12,6 @@ const AnswerQuiz = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
 
-  // Add this near your other state declarations
-  const [tabSwitchWarnings, setTabSwitchWarnings] = useState(0); 
 
   // API Hooks
   const [handleQuiz] = useHandleQuizMutation();
@@ -54,62 +51,74 @@ const AnswerQuiz = () => {
   });
 
 
-
-    // //useEffect hook to track the tab switched(It can be changed)
-    // useEffect(() => {
-    //   const handleVisibilityChange = async () => {
-    //     if (document.hidden) {
-    //       try {
-    //         // Immediate disqualification with no warnings
-    //         toast.error(
-    //           <div className="d-flex align-items-center">
-    //           <span style={{ fontSize: '1.5em' }}>👮‍♂️🔍🚫</span>
-    //           <span className="ms-2">
-    //             <b>CHEATING DETECTED!</b> You've been disqualified from the quiz. 
-    //             <span style={{ fontSize: '1.2em' }}> 😠⛔</span>
-    //           </span>
-    //         </div>,
-    //         { 
-    //           autoClose: 8000,
-    //           className: 'shadow-lg',
-    //           bodyClassName: 'bg-danger text-white'
-    //         }
-    //        );
-    //         //remove participant
-    //         await popPartcipant({ 
-    //           id: id,
-    //           data: { userId: userInfo._id }
-    //         }).unwrap();
-            
-    //         // Redirect to home with shame state
-    //        navigate('/', { 
-    //         state: { 
-    //           shameMessage: "You were caught cheating!",
-    //           emoji: "🤥👎"
-    //         } 
-    //       });
-    //       } catch (error) {
-    //         toast.error(
-    //           <div>
-    //             <span style={{ fontSize: '1.5em' }}>⚠️❌</span>
-    //             <span className="ms-2">Failed to process disqualification</span>
-    //           </div>
-    //         );
-    //         console.error("Disqualification error:", error);
-    //       }
-    //     }
-    //   };
-    
-    //     // Only activate if quiz is ongoing
-    //     if (countdown.status === 'active' && !quizCompleted) {
-    //       document.addEventListener('visibilitychange', handleVisibilityChange);
-    //     }
-      
-    //   return () => {
-    //     document.removeEventListener('visibilitychange', handleVisibilityChange);
-    //   };
-    // }, [id, userInfo._id, navigate, countdown.status, quizCompleted,]);
+  // after 3 attempt of tab switching participant will be disqualified
+  useEffect(() => {
+    const handleVisibilityChange = async () => {
+      if (document.hidden && countdown.status === 'active' && !quizCompleted) {
+        let tabSwitchCount = parseInt(localStorage.getItem('tabSwitchCount') || '0', 10);
+        tabSwitchCount += 1;
+        localStorage.setItem('tabSwitchCount', tabSwitchCount);
   
+        if (tabSwitchCount > 3) {
+          try {
+            toast.error(
+              <div className="d-flex align-items-center">
+                <span className="ms-2">
+                  <b>CHEATING DETECTED!</b> You switched tabs too many times. Disqualified! 😠⛔
+                </span>
+              </div>,
+              {
+                autoClose: 8000,
+                className: 'shadow-lg',
+                bodyClassName: 'bg-danger text-white',
+              }
+            );
+  
+            await popPartcipant({
+              id: id,
+              data: { userId: userInfo._id }
+            }).unwrap();
+  
+            localStorage.removeItem('tabSwitchCount');
+            navigate('/', {
+              state: {
+                shameMessage: "You were caught cheating (too many tab switches)!",
+                emoji: "🤥👎"
+              }
+            });
+          } catch (error) {
+            toast.error(
+              <div>
+                <span style={{ fontSize: '1.5em' }}>⚠️❌</span>
+                <span className="ms-2">Failed to process disqualification</span>
+              </div>
+            );
+            console.error("Disqualification error:", error);
+          }
+        } else {
+          toast.warn(
+            <div>
+              <span className="ms-2">
+                Warning {tabSwitchCount}/3: Switching tabs during the quiz is not allowed!
+              </span>
+            </div>,
+            {
+              autoClose: 5000,
+              className: 'shadow',
+            }
+          );
+        }
+      }
+    };
+  
+    if (countdown.status === 'active' && !quizCompleted) {
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+    }
+  
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [id, userInfo._id, navigate, countdown.status, quizCompleted]);
 
 
   // Fetch participant data from leaderboard
@@ -164,6 +173,7 @@ const AnswerQuiz = () => {
         localStorage.removeItem('quizStartTime');
         localStorage.removeItem('quizEndTime');
         localStorage.removeItem('quizCompleted');
+        localStorage.removeItem('tabSwitchCount');
         clearInterval(interval);
         navigate(`/show-leaderboard/${id}`);
       }
