@@ -18,6 +18,7 @@ import Loginscreen from './screens/Loginscreen.jsx';
 import Verifyotpregscreen from './screens/Verifyotpregscreen.jsx';
 import Profilescreen from './screens/Profilescreen.jsx';
 import PrivateRoute from './components/privateRoute.jsx';
+import AdminRoute from './components/adminRoute.jsx'
 import Sendrecoveryemailscreen from './screens/Sendrecoveryemailscreen.jsx';
 import PasswordRecoveryOtpScreen from './screens/PasswordRecoveryOtpScreen.jsx';
 import Changepasswordscreen from './screens/Changepasswordscreen.jsx';
@@ -25,9 +26,9 @@ import Createquizscreen from './screens/Createquizscreen.jsx';
 import ViewQuizDetailsScreen from './screens/ViewQuizDetailsscreen.jsx';
 import Viewallcreatedquizes from './screens/Viewallcreatedquizes.jsx';
 import AnswerQuiz from './screens/AnswerQuiz.jsx';
-import Showwinner from './screens/Showleaderboard.jsx';
-import { Showleaderboard } from './screens/Showleaderboard.jsx';
-
+import Showleaderboard from './screens/Showleaderboard.jsx';
+import Allusers from './screens/Allusers.jsx'
+import UserInfo from './screens/UserInfo.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -40,6 +41,7 @@ const router = createBrowserRouter(
       <Route path="/send-email" element={<Sendrecoveryemailscreen/>}/>
       <Route path="/password-recovery-otp/:email" element={<PasswordRecoveryOtpScreen/>}/>
       <Route path="/change-password/:email" element={<Changepasswordscreen/>}/>
+      <Route path="/show-user/:id" element={<UserInfo/>}/> 
 
       <Route path='' element={<PrivateRoute/>}>
           <Route path='/create-quiz' element={<Createquizscreen/>}/>
@@ -47,6 +49,10 @@ const router = createBrowserRouter(
           <Route path='/view-all-created-quizes' element={<Viewallcreatedquizes/>}/>
           <Route path='/answer-quiz/:id' element={<AnswerQuiz/>}/>
           <Route path='/show-leaderboard/:id' element={<Showleaderboard/>}/>
+      </Route>
+
+      <Route path = '' element={<AdminRoute/>}>
+         <Route path='/admin/users' element={<Allusers/>}/>
       </Route>
 
 

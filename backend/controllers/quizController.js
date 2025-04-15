@@ -52,12 +52,39 @@ const createQuiz = asyncHandler(async (req, res) => {
 
 //@desc view all quizes
 //@route GET/api/createdQuizes
-//@access Public
+//@access Private
 const viewAllCreatedQuizes = asyncHandler(async (req, res) => {
   const quizes = await Quiz.find().populate('user_id');
   res.status(200).json(quizes);
 })
 
+
+// @desc    View all joined quizzes of a particular participant
+// @route   GET /api/quizzes/joinedQuizes/:id
+// @access  Private
+const viewJoinedQuizes = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Find all quizzes where the user is a participant
+     // Correct query to find quizzes where the user is a participant
+     const joinedQuizzes = await Quiz.find({
+      'leaderboard.user_id': id
+    })
+
+    res.status(200).json({
+      count: joinedQuizzes.length,
+      joinedQuizzes
+    });
+
+  } catch (error) {
+    console.error('Error fetching joined quizzes:', error);
+    res.status(500).json({
+      message: 'Server error while fetching joined quizzes',
+      error: error.message
+    });
+  }
+});
 
 
 // @desc    View a quiz and its details
@@ -345,31 +372,35 @@ const updatequizExitTime = asyncHandler(async (req, res) => {
   });
 })
 
-//@desc pop a participant from the leaderboard
-//@route DELETE/api/quizes/pop-participant/:id
+//@desc disqualify a particpant
+//@route POST/api/quizes/disqualify/:id
 //@access Private
-const popParticipant = asyncHandler(async (req, res) => {
+const disqualifyPaticipant = asyncHandler(async (req,res) => {
   const { id } = req.params; // Quiz ID
   const { userId } = req.body; // Should receive user ID
   const quiz = await Quiz.findById(id);
   if (!quiz) {
     return res.status(404).json({ message: "Quiz not found" });
   }
-  // Find the participant in the leaderboard
-  const participantIndex = quiz.leaderboard.findIndex(
+
+   // Find the participant in the leaderboard
+   const participantIndex = quiz.leaderboard.findIndex(
     entry => entry.user_id.toString() === userId.toString()
   );
   if (participantIndex === -1) {
     return res.status(404).json({ message: "Participant not found in this quiz" });
   }
-  // Remove the participant from the leaderboard
-  quiz.leaderboard.splice(participantIndex, 1);
+  // Disqualify the participant
+  quiz.leaderboard[participantIndex].isDisqualified = true;
   await quiz.save();
   res.status(200).json({
     success: true,
-    message: "Participant removed from the leaderboard successfully",
-    });
+    message: "Participant disqualified successfully",
+  });
+
 })
+
+
 
 
 export {
@@ -381,7 +412,8 @@ export {
   deleteQuiz,
   viewAllCreatedQuizes,
   updatequizExitTime,
-  popParticipant
+  disqualifyPaticipant,
+  viewJoinedQuizes 
 };
 
 

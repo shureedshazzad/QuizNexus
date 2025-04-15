@@ -110,6 +110,10 @@ const quizSchema = new mongoose.Schema({
           quizExitTime:{
             type: Date, // Timestamp for when the participant exits the quiz
             default: null, // Initially null, set when the participant exits the quiz
+          },
+          isDisqualified:{
+            type:Boolean,
+            default:false
           }
         },
     ],

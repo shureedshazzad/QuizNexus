@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLogoutMutation } from '../slices/usersApiSlice';
 import { logout } from '../slices/authSlice';
-import { FaHome, FaPlayCircle, FaPlusCircle, FaRobot, FaSignInAlt, FaUser, FaSignOutAlt, FaClipboardList } from 'react-icons/fa';
+import { FaHome, FaPlayCircle, FaPlusCircle, FaRobot, FaSignInAlt, FaUser, FaSignOutAlt, FaClipboardList, FaUsers } from 'react-icons/fa';
 import JoinQuizModal from './JoinQuizModal'; // Import the JoinQuizModal component
 
 import './navDesign.css';
@@ -46,6 +46,9 @@ function Navbar() {
 
   const location = useLocation();
   const isQuizPage = location.pathname.startsWith('/answer-quiz');
+  const isAdmin = userInfo?.isAdmin
+  console.log(isAdmin);
+  console.log(userInfo);
 
 
   if(isQuizPage)
@@ -191,6 +194,18 @@ function Navbar() {
                     <FaSignOutAlt className="me-2" /> 
                     Logout
                   </button>
+
+
+                     {/* Admin-specific dropdown items */}
+              {isAdmin && (
+                 <>
+                  <Link to="/admin/users" className="dropdown-item">
+                    <FaUsers className="me-2" /> Manage Users
+                  </Link>
+                 </>
+               )}
+
+
                   <Link to="/view-all-created-quizes" className="dropdown-item">
                      <FaClipboardList className="me-2" /> My Quizzes
                   </Link>

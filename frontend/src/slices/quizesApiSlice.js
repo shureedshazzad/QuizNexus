@@ -28,6 +28,17 @@ export const quizesApiSlice = apiSlice.injectEndpoints({
                 // }, 
             }),
         }),
+
+        viewJoinedQuiz: builder.query({
+            query: (id) => ({
+                url: `${QUIZES_URL}/joinedQuizes/${id}`,
+                method: 'GET',
+                providesTags: ['Quiz'], // Provides 'Quiz' tag for cache management
+                keepUnusedDataFor: 5, // Keeps the data for 5 seconds before it expires
+                credentials: 'include',
+            })
+
+        }),
         deleteQuiz: builder.mutation({
             query: (id) => ({
                 url: `${QUIZES_URL}/delete/${id}`,
@@ -97,10 +108,10 @@ export const quizesApiSlice = apiSlice.injectEndpoints({
                 },
             })
         }),
-        popParticipant: builder.mutation({
+        disqualifyParticipant: builder.mutation({
             query: ({id, data}) => ({
-                url: `${QUIZES_URL}/pop-participant/${id}`,
-                method: 'DELETE',
+                url: `${QUIZES_URL}/disqualify/${id}`,
+                method: 'POST',
                 body: data,
                 credentials: 'include',
                 headers: {
@@ -121,5 +132,6 @@ export const {
   useJoinQuizMutation,
   useHandleQuizMutation,
   useUpdateExitTimeMutation,
-  usePopParticipantMutation
+  useDisqualifyParticipantMutation,
+  useViewJoinedQuizQuery
 } = quizesApiSlice;

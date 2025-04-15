@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { LinkContainer } from 'react-router-bootstrap';
+import { Button } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfo } from '@fortawesome/free-solid-svg-icons';
 
 const backgroundStyle = {
   background: "#E7E8D8",
@@ -13,101 +17,27 @@ const avatarStyle = {
   height: "150px",
   borderRadius: "50%",
   objectFit: "cover",
-  marginLeft: "2rem", // Adjusted margin for better spacing
+  marginLeft: "2rem",
 };
 
-const progressBarStyle = {
-  height: "20px",
-  borderRadius: "10px",
-  backgroundColor: "#f0f0f0",
-  overflow: "hidden",
-  position: "relative",
-};
-
-const progressFillStyle = (percentage) => ({
-  height: "100%",
-  width: `${percentage}%`,
-  background: `linear-gradient(90deg, #4CAF50, #8BC34A)`, // Gradient color
-  borderRadius: "10px",
-  transition: "width 0.5s ease-in-out", // Smooth animation
-});
-
-const progressLabelStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  color: "#000",
-  fontWeight: "bold",
-};
 
 const Profilescreen = () => {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [avatar, setAvatar] = useState('');
-  const [level, setLevel] = useState('');
-  const [total_score, setTotalScore] = useState(0);
+
 
   const { userInfo } = useSelector((state) => state.auth);
-
-  console.log("User Info:", userInfo);
 
   useEffect(() => {
     if (userInfo) {
       setUserName(userInfo.userName);
       setEmail(userInfo.email);
       setAvatar(userInfo.avatar);
-      setLevel(userInfo.level);
-      setTotalScore(userInfo.total_score || 0); // Fallback to 0 if total_score is missing
     }
   }, [userInfo]);
 
-  // Calculate progress percentage based on score and level
-  const calculateProgress = () => {
-    let maxScore;
-    switch (level) {
-      case "Brainy Beginner":
-        maxScore = 100;
-        break;
-      case "Rising Quizzer":
-        maxScore = 200;
-        break;
-      case "Quiz Conqueror":
-        maxScore = 300;
-        break;
-      case "Knowledge Kingpin":
-        maxScore = 400;
-        break;
-      case "Quiz Maestro":
-        maxScore = 500;
-        break;
-      case "Knowledge Emperor":
-        maxScore = 1000; // Expert has no upper limit, but we use 1000 for consistency
-        break;
-      default:
-        maxScore = 100; // Default to Beginner
-    }
 
-    // Calculate progress within the current level
-    const levelStartScore = {
-      "Brainy Beginner": 0,
-      "Rising Quizzer": 100,
-      "Quiz Conqueror": 200,
-      "Knowledge Kingpin": 300,
-      "Quiz Maestro": 400,
-      "Knowledge Emperor": 500,
-    }[level];
-
-    const progressInLevel = total_score - levelStartScore;
-    return (progressInLevel / (maxScore - levelStartScore)) * 100;
-  };
-
-  // Determine progress bar color based on percentage
-  const getProgressColor = (percentage) => {
-    if (percentage >= 75) return "green";
-    if (percentage >= 50) return "orange";
-    return "red";
-  };
 
   return (
     <div
@@ -115,56 +45,53 @@ const Profilescreen = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "100vh", // Full viewport height
-        backgroundColor: "#f8f9fa", // Light background for the page
+        minHeight: "100vh",
+        backgroundColor: "#f8f9fa",
       }}
     >
       <div style={{ maxWidth: "800px", width: "100%" }}>
-        <div className="h-100 d-flex align-items-center py-5 px-4 px-md-5" style={backgroundStyle}>
+        <div 
+          className="h-100 d-flex align-items-center py-5 px-4 px-md-5 wow fadeInUp" 
+          data-wow-delay="0.1s"
+          style={backgroundStyle}
+        >
           {/* Profile Form */}
           <div style={{ flex: 1 }}>
-            <h2 className="mb-4 text-center">Profile</h2>
+            <h2 className="mb-4 text-center wow fadeInUp" data-wow-delay="0.2s">Profile</h2>
             <div className="row g-3">
-              <div className="col-12">
+              <div className="col-12 wow fadeInUp" data-wow-delay="0.3s">
                 <label>Username:</label>
-                <input type="text" className="form-control border-0" value={userName} readOnly />
+                <input 
+                  type="text" 
+                  className="form-control border-0" 
+                  value={userName} 
+                  readOnly 
+                />
               </div>
-              <div className="col-12">
+              <div className="col-12 wow fadeInUp" data-wow-delay="0.4s">
                 <label>Email:</label>
-                <input type="text" className="form-control border-0" value={email} readOnly />
+                <input 
+                  type="text" 
+                  className="form-control border-0" 
+                  value={email} 
+                  readOnly 
+                />
               </div>
-              <div className="col-12">
-                <label>Level:</label>
-                <input type="text" className="form-control border-0" value={level} readOnly />
-              </div>
-              <div className="col-12">
-                <label>Total Score:</label>
-                <input type="number" className="form-control border-0" value={total_score} readOnly />
-              </div>
-              <div className="col-12">
-                <label>Progress:</label>
-                <div style={progressBarStyle}>
-                  <div
-                    style={{
-                      ...progressFillStyle(calculateProgress()),
-                      background: getProgressColor(calculateProgress()), // Dynamic color
-                    }}
-                  ></div>
-                  <div style={progressLabelStyle}>
-                    {calculateProgress().toFixed(2)}% {/* Display progress percentage */}
-                  </div>
-                </div>
-                <small>
-                  {total_score} / {level === "Knowledge Emperor" ? "∞" : "Next Level"} points ({level})
-                </small>
+              <div className="col-12 mt-3 wow fadeInUp" data-wow-delay="0.7s">
+                <LinkContainer to={`/show-user/${userInfo?._id}`}>
+                  <Button variant="info" className="w-100">
+                    <FontAwesomeIcon icon={faInfo} className="me-2" />
+                    View Joinnd Quiz Info
+                  </Button>
+                </LinkContainer>
               </div>
             </div>
           </div>
 
           {/* Avatar Image */}
-          <div>
+          <div className="wow fadeInUp" data-wow-delay="0.8s">
             <img
-              src={avatar || "https://via.placeholder.com/150"} // Default placeholder if no avatar
+              src={avatar || "https://via.placeholder.com/150"}
               alt="User Avatar"
               style={avatarStyle}
             />

@@ -11,7 +11,7 @@ import { authUser ,
     updateUserProfile,
     getUsers,
     getUserbyId,
-    deleteUser } from "../controllers/userController.js";
+    } from "../controllers/userController.js";
 import { protect , admin} from "../middleware/authMiddleware.js";
 
 
@@ -24,7 +24,7 @@ router.post('/verify-otp',verifyOTP);
 router.post('/reset-password',resetPassword);
 router.route('/profile').get(protect,getUserProfile).put(protect,updateUserProfile);
 router.route('/').get(protect,admin,getUsers)
-router.route('/:id').get(protect,admin,getUserbyId).delete(protect,admin,deleteUser);
+router.route('/:id').get(protect,getUserbyId);
 
 
 export default router;

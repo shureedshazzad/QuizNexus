@@ -351,7 +351,7 @@ const ViewQuizDetailsScreen = () => {
             {/* Leaderboard Section */}
             {(countdown.status === 'pending' || countdown.status === 'active') && (
               <div style={{ marginTop: '20px' }}>
-                <h4>Leaderboard</h4>
+                <h4>Participants</h4>
                 {quizData?.quiz?.leaderboard && quizData.quiz.leaderboard.length > 0 ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     {quizData.quiz.leaderboard.map((entry, index) => (

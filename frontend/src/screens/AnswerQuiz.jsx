@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useViewQuizQuery, useHandleQuizMutation, useUpdateExitTimeMutation,usePopParticipantMutation} from "../slices/quizesApiSlice";
+import { useViewQuizQuery, useHandleQuizMutation, useUpdateExitTimeMutation,useDisqualifyParticipantMutation} from "../slices/quizesApiSlice";
 import Loader from '../components/Loader';
 import { toast } from 'react-toastify';
 import { FaClock,FaCheck,FaTimes } from "react-icons/fa";
@@ -17,7 +17,7 @@ const AnswerQuiz = () => {
   const [handleQuiz] = useHandleQuizMutation();
   const { data: quizData, isLoading, isError } = useViewQuizQuery(id,{pollingInterval: 5000});;
   const [updateExitTime] = useUpdateExitTimeMutation();
-  const [popPartcipant] = usePopParticipantMutation();
+  const [paricipantDisqualify] = useDisqualifyParticipantMutation();
 
   // Component State
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -74,7 +74,7 @@ const AnswerQuiz = () => {
               }
             );
   
-            await popPartcipant({
+            await paricipantDisqualify({
               id: id,
               data: { userId: userInfo._id }
             }).unwrap();
