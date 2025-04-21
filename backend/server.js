@@ -6,9 +6,9 @@ dotenv.config();
 import connectDB from './config/db.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import userRoute from './routes/userRoute.js';
-import quizRoute from './routes/quizRoute.js'
+import quizRoute from './routes/quizRoute.js';
+import subjectRoute from './routes/subjectRoute.js';
 import { createServer } from 'http'; // HTTP server for Socket.IO
-
 
 
 
@@ -38,6 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 
  app.use('/api/users',userRoute);//userRoute
  app.use('/api/quizes',quizRoute);//quizRoute
+ app.use('/api/subjects',subjectRoute);//subjectRoute
 
 
 app.get('/', (req,res) =>{

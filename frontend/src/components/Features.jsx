@@ -1,7 +1,11 @@
-import React from 'react';
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import JoinQuizModal from './JoinQuizModal'; // Import the JoinQuizModal component
+import './navDesign.css';
 
 function Features() {
+  const [showJoinQuizModal, setShowJoinQuizModal] = useState(false);
+
   const containerStyle = {
     width: '100%',
     maxWidth: '900px',
@@ -15,20 +19,28 @@ function Features() {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', // Added a shadow for depth
-    transition: 'transform 0.3s ease', // Added transition for hover effect
+    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+    transition: 'transform 0.3s ease',
   };
 
-  const backgroundStyle = {
+  const cardStyle = {
     background: "#E7E8D8",
     borderRadius: "16px",
     boxShadow: "0 30px 30px -25px rgba(65, 51, 183, 0.25)",
-    padding: '20px', // Added padding for better content spacing
-    textAlign: 'center', // Centered text
-  }
+    padding: '20px',
+    textAlign: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    height: '100%',
+  };
+
+  const contentStyle = {
+    flexGrow: 1,
+  };
 
   const buttonStyle = {
-    backgroundColor: '#ff5733', // Orangered background
+    backgroundColor: '#ff5733',
     color: 'white',
     padding: '10px 20px',
     fontSize: '16px',
@@ -37,57 +49,69 @@ function Features() {
     cursor: 'pointer',
     transition: 'background-color 0.3s ease',
     marginTop: '20px',
-  };
-
-  const buttonHoverStyle = {
-    backgroundColor: '#e04e00', // Darker shade on hover
+    textDecoration: 'none',
+    alignSelf: 'center',
   };
 
   return (
-    <div className="container-xxl py-5" id="features">
-      <div className="container">
-        <div className="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style={containerStyle}>
-          <h1>Our Features</h1>
-        </div>
-        <div className="row g-4">
-          {/* Join Quizzes Feature */}
-          <div className="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-            <div className="service-item h-100 p-5" style={backgroundStyle}>
-              <div style={circleStyle} className="service-icon">
-                <i className="fa fa-users text-primary fs-4"></i>
-              </div>
-              <h4 className="mb-3 mt-2">Join Quizzes</h4>
-              <p className="mb-4">Participate in a wide variety of exciting quizzes to test your knowledge on various topics. With every quiz, challenge yourself and improve your skills in a fun and engaging way.</p>
-            </div>
+    <>
+      <div className="container-xxl py-5" id="features">
+        <div className="container">
+          <div className="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style={containerStyle}>
+            <h1>Our Features</h1>
           </div>
-
-          {/* Make Quizzes Feature */}
-          <div className="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-  <div className="service-item h-100 p-5" style={backgroundStyle}>
-    <div style={circleStyle} className="service-icon">
-      <i className="fa fa-pencil-alt text-warning fs-4"></i>
-    </div>
-    <h4 className="mb-3 mt-2">Make Quizzes</h4>
-    <p className="mb-4">
-      Create and design your own quizzes to challenge others. Customize questions, and create quizzes based on your interests.
-    </p>
-  </div>
-</div>
-
-
-          {/* Challenge with AI Feature */}
-          <div className="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-            <div className="service-item h-100 p-5" style={backgroundStyle}>
-              <div style={circleStyle} className="service-icon">
-                <i className="fa fa-robot text-success fs-4"></i>
+          <div className="row g-4">
+            {/* Join Quizzes */}
+            <div className="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+              <div className="service-item h-100 p-5" style={cardStyle}>
+                <div style={contentStyle}>
+                  <div style={circleStyle} className="service-icon">
+                    <i className="fa fa-users text-primary fs-4"></i>
+                  </div>
+                  <h4 className="mb-3 mt-2">Join Quizzes</h4>
+                  <p className="mb-4">Participate in a wide variety of exciting quizzes to test your knowledge on various topics. With every quiz, challenge yourself and improve your skills in a fun and engaging way.</p>
+                </div>
+                <button style={buttonStyle} onClick={() => setShowJoinQuizModal(true)}>Join Now</button>
               </div>
-              <h4 className="mb-3 mt-2">Challenge with AI</h4>
-              <p className="mb-4">Take your skills to the next level by challenging AI-powered opponents. Grow your expertise as you advance through different levels of difficulty in the AI challenges.</p>
+            </div>
+
+            {/* Make Quizzes */}
+            <div className="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+              <div className="service-item h-100 p-5" style={cardStyle}>
+                <div style={contentStyle}>
+                  <div style={circleStyle} className="service-icon">
+                    <i className="fa fa-pencil-alt text-warning fs-4"></i>
+                  </div>
+                  <h4 className="mb-3 mt-2">Make Quizzes</h4>
+                  <p className="mb-4">Create and design your own quizzes to challenge others. Customize questions, and create quizzes based on your interests.</p>
+                </div>
+                <Link to="/create-quiz" style={buttonStyle}>Create Quiz</Link>
+              </div>
+            </div>
+
+            {/* Challenge with AI */}
+            <div className="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+              <div className="service-item h-100 p-5" style={cardStyle}>
+                <div style={contentStyle}>
+                  <div style={circleStyle} className="service-icon">
+                    <i className="fa fa-robot text-success fs-4"></i>
+                  </div>
+                  <h4 className="mb-3 mt-2">Adaptive Learning with AI</h4>
+                  <p className="mb-4">Master topics efficiently with AI-powered adaptive learning. Our smart system analyzes your performance and customizes quiz difficulty in real time—helping you improve faster and stay engaged like never before.</p>
+                </div>
+                <Link to="/ai-challenge" style={buttonStyle}>Challenge AI</Link>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Modal */}
+      <JoinQuizModal
+        show={showJoinQuizModal}
+        onHide={() => setShowJoinQuizModal(false)}
+      />
+    </>
   );
 }
 

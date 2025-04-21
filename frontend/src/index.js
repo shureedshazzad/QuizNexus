@@ -29,6 +29,9 @@ import AnswerQuiz from './screens/AnswerQuiz.jsx';
 import Showleaderboard from './screens/Showleaderboard.jsx';
 import Allusers from './screens/Allusers.jsx'
 import UserInfo from './screens/UserInfo.jsx';
+import AllSubjectScreen from './screens/AllSubjectScreen.jsx';
+import Subjectchoicescreen from './screens/Subjectchoicescreen.jsx';
+import ProgressScreen from './screens/ProgressScreen.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -42,6 +45,7 @@ const router = createBrowserRouter(
       <Route path="/password-recovery-otp/:email" element={<PasswordRecoveryOtpScreen/>}/>
       <Route path="/change-password/:email" element={<Changepasswordscreen/>}/>
       <Route path="/show-user/:id" element={<UserInfo/>}/> 
+    
 
       <Route path='' element={<PrivateRoute/>}>
           <Route path='/create-quiz' element={<Createquizscreen/>}/>
@@ -49,10 +53,13 @@ const router = createBrowserRouter(
           <Route path='/view-all-created-quizes' element={<Viewallcreatedquizes/>}/>
           <Route path='/answer-quiz/:id' element={<AnswerQuiz/>}/>
           <Route path='/show-leaderboard/:id' element={<Showleaderboard/>}/>
+          <Route path="/all-subject" element={<Subjectchoicescreen/>}/>
+          <Route path='/progress/:subjectId' element={<ProgressScreen/>}/>
       </Route>
 
       <Route path = '' element={<AdminRoute/>}>
          <Route path='/admin/users' element={<Allusers/>}/>
+         <Route path='/admin/subjects' element={<AllSubjectScreen/>}/>
       </Route>
 
 

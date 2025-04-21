@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLogoutMutation } from '../slices/usersApiSlice';
 import { logout } from '../slices/authSlice';
-import { FaHome, FaPlayCircle, FaPlusCircle, FaRobot, FaSignInAlt, FaUser, FaSignOutAlt, FaClipboardList, FaUsers } from 'react-icons/fa';
+import { FaHome, FaPlayCircle, FaPlusCircle, FaRobot, FaSignInAlt, FaUser, FaSignOutAlt, FaClipboardList, FaUsers, FaBook } from 'react-icons/fa';
 import JoinQuizModal from './JoinQuizModal'; // Import the JoinQuizModal component
 
 import './navDesign.css';
@@ -151,22 +151,34 @@ function Navbar() {
             <FaHome className="nav-icon" /> Home
           </Link>
 
-          {/* Join a Quiz Button */}
+        {userInfo?(
           <button
-            className="nav-item nav-link btn btn-link"
-            onClick={() => setShowJoinQuizModal(true)} // Open the modal
-            style={{ border: 'none', background: 'transparent', textDecoration: 'none' }}
+          className="nav-item nav-link btn btn-link"
+          onClick={() => setShowJoinQuizModal(true)}
+          style={{ border: 'none', background: 'transparent', textDecoration: 'none' }}
           >
-            <FaPlayCircle className="nav-icon" /> Join a Quiz
+          <FaPlayCircle className="nav-icon" /> Join a Quiz
           </button>
-
+          ):(
+            <Link to = '/login'
+            className="nav-item nav-link btn btn-link"
+            style={{ border: 'none', background: 'transparent', textDecoration: 'none' }}
+            >
+            <FaPlayCircle className="nav-icon" /> Join a Quiz
+            </Link>
+           )
+          }
+        
           <Link to='/create-quiz' className="nav-item nav-link">
             <FaPlusCircle className="nav-icon" /> Create a Quiz
           </Link>
 
-          <Link to='/challenge' className="nav-item nav-link">
-            <FaRobot className="nav-icon" /> Challenge AI
-          </Link>
+          {!isAdmin &&(
+            <Link to='/all-subject' className="nav-item nav-link">
+              <FaRobot className="nav-icon" /> Adaptive Learning with AI
+            </Link>
+          )}
+
 
           {/* Conditional Rendering for Logged-in User */}
           {userInfo ? (
@@ -190,25 +202,30 @@ function Navbar() {
                   <Link to="/profile" className="dropdown-item">
                     <FaUser className="me-2" /> Profile
                   </Link>
+             
+
+                     {/* Admin-specific dropdown items */}
+               {isAdmin && (
+                 <>
+                  <Link to="/admin/users" className="dropdown-item">
+                    <FaUsers className="me-2" /> Manage Users
+                  </Link>
+
+                  <Link to = "/admin/subjects" className="dropdown-item">
+                     <FaBook className="me-2" /> Manage Subjects
+                  </Link>
+                 </>
+                )}
+
+                  <Link to="/view-all-created-quizes" className="dropdown-item">
+                     <FaClipboardList className="me-2" /> My Quizzes
+                  </Link>
+
                   <button onClick={logoutHandler} className="dropdown-item text-danger">
                     <FaSignOutAlt className="me-2" /> 
                     Logout
                   </button>
 
-
-                     {/* Admin-specific dropdown items */}
-              {isAdmin && (
-                 <>
-                  <Link to="/admin/users" className="dropdown-item">
-                    <FaUsers className="me-2" /> Manage Users
-                  </Link>
-                 </>
-               )}
-
-
-                  <Link to="/view-all-created-quizes" className="dropdown-item">
-                     <FaClipboardList className="me-2" /> My Quizzes
-                  </Link>
                 </div>
               )}
             </div>
