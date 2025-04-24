@@ -8,6 +8,7 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import userRoute from './routes/userRoute.js';
 import quizRoute from './routes/quizRoute.js';
 import subjectRoute from './routes/subjectRoute.js';
+import groqRoute from './routes/groqRoute.js';
 import { createServer } from 'http'; // HTTP server for Socket.IO
 
 
@@ -39,6 +40,8 @@ app.use(express.urlencoded({ extended: true }));
  app.use('/api/users',userRoute);//userRoute
  app.use('/api/quizes',quizRoute);//quizRoute
  app.use('/api/subjects',subjectRoute);//subjectRoute
+ 
+app.use('/api/groq', groqRoute);
 
 
 app.get('/', (req,res) =>{
