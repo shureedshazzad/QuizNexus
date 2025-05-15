@@ -40,8 +40,7 @@ app.use(express.urlencoded({ extended: true }));
  app.use('/api/users',userRoute);//userRoute
  app.use('/api/quizes',quizRoute);//quizRoute
  app.use('/api/subjects',subjectRoute);//subjectRoute
- 
-app.use('/api/groq', groqRoute);
+ app.use('/api/groqs', groqRoute);//groqRoute
 
 
 app.get('/', (req,res) =>{

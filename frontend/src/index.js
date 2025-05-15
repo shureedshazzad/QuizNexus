@@ -32,6 +32,8 @@ import UserInfo from './screens/UserInfo.jsx';
 import AllSubjectScreen from './screens/AllSubjectScreen.jsx';
 import Subjectchoicescreen from './screens/Subjectchoicescreen.jsx';
 import ProgressScreen from './screens/ProgressScreen.jsx';
+import Aibasedadaptivelearningscreen from './screens/Aibasedadaptivelearningscreen.jsx';
+import Feedbackscreen from './screens/Feedbackscreen.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -55,6 +57,8 @@ const router = createBrowserRouter(
           <Route path='/show-leaderboard/:id' element={<Showleaderboard/>}/>
           <Route path="/all-subject" element={<Subjectchoicescreen/>}/>
           <Route path='/progress/:subjectId' element={<ProgressScreen/>}/>
+          <Route path='/quiz/:subjectId' element={<Aibasedadaptivelearningscreen/>}/>
+          <Route path='/feedback/:subjectId' element={<Feedbackscreen/>}/>
       </Route>
 
       <Route path = '' element={<AdminRoute/>}>

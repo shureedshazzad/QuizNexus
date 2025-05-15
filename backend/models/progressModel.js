@@ -27,7 +27,7 @@ const progressSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  averageScore: {
+  success_rate: {
     type: Number,
     default: 0,
   },
@@ -35,6 +35,24 @@ const progressSchema = new mongoose.Schema({
     type: Date,
     default: null,
   },
+  questions: [{
+    questionId: {
+      type: mongoose.Schema.Types.ObjectId, // unique identifier for each question
+      default: () => new mongoose.Types.ObjectId(), // use a function to generate a new ObjectId
+    },
+    questionText: {
+      type: String,
+      required: true
+    },
+    isCorrect: {
+      type: Boolean,
+      default: false
+    },
+    explanation:{
+      type:String,
+      default: null
+    }
+  }]
 }, {
   timestamps: true,
 });

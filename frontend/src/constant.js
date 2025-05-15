@@ -6,4 +6,4 @@ export const BASE_URL = 'http://localhost:5000';//localhost 5000
 export const USERS_URL = '/api/users';
 export const QUIZES_URL = '/api/quizes';
 export const SUBJECTS_URL = '/api/subjects';
-export const PROGRESS_URL = '/api/progress';
+export const GROQS_URL = '/api/groqs';

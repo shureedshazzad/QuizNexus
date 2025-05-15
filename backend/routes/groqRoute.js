@@ -1,17 +1,11 @@
-import express from 'express';
-import { generateLlamaResponse } from '../utils/groqClient.js';
-
+import express from "express";
 const router = express.Router();
 
-router.post('/generate-question', async (req, res) => {
-  const { input } = req.body;
+import { generateAdaptiveQuestion, updateProgress , provideFeedback } from "../controllers/aiBasedAdaptiveLearningController.js";
+import { protect } from "../middleware/authMiddleware.js";
 
-  try {
-    const output = await generateLlamaResponse(input);
-    res.json({ result: output });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+router.post('/generate-question', protect, generateAdaptiveQuestion);
+router.post('/progress-update', protect, updateProgress);
+router.post('/feedback',protect,provideFeedback);
 
 export default router;
