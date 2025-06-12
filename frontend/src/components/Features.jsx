@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import JoinQuizModal from './JoinQuizModal'; // Import the JoinQuizModal component
+import { useSelector } from 'react-redux';
 import './navDesign.css';
 
 function Features() {
   const [showJoinQuizModal, setShowJoinQuizModal] = useState(false);
+  const { userInfo } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  
+
+  const getCreateQuizPath = () => userInfo ? '/create-quiz' : '/login';
+  const getAiChallengePath = () => userInfo ? '/all-subject' : '/login';
 
   const containerStyle = {
     width: '100%',
@@ -61,35 +69,47 @@ function Features() {
             <h1>Our Features</h1>
           </div>
           <div className="row g-4">
-            {/* Join Quizzes */}
-            <div className="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-              <div className="service-item h-100 p-5" style={cardStyle}>
-                <div style={contentStyle}>
-                  <div style={circleStyle} className="service-icon">
-                    <i className="fa fa-users text-primary fs-4"></i>
-                  </div>
-                  <h4 className="mb-3 mt-2">Join Quizzes</h4>
-                  <p className="mb-4">Participate in a wide variety of exciting quizzes to test your knowledge on various topics. With every quiz, challenge yourself and improve your skills in a fun and engaging way.</p>
+            
+          <div className="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+             <div className="service-item h-100 p-5" style={cardStyle}>
+              <div style={contentStyle}>
+                <div style={circleStyle} className="service-icon">
+                  <i className="fa fa-users text-primary fs-4"></i>
                 </div>
-                <button style={buttonStyle} onClick={() => setShowJoinQuizModal(true)}>Join Now</button>
+                <h4 className="mb-3 mt-2">Join A Quiz</h4>
+                <p className="mb-4">Participate in a wide variety of exciting quizzes to test your knowledge on various topics. With every quiz, challenge yourself and improve your skills in a fun and engaging way</p>
+                </div>
+                <button
+                style={buttonStyle}
+                onClick={() => {
+                  if (userInfo) {
+                    setShowJoinQuizModal(true);
+                  } else {
+                    navigate('/login');
+                  }
+                }}
+              >
+                Try It
+                </button>
               </div>
             </div>
+            {/* Create Quizzes */}
 
-            {/* Make Quizzes */}
+
             <div className="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
               <div className="service-item h-100 p-5" style={cardStyle}>
                 <div style={contentStyle}>
                   <div style={circleStyle} className="service-icon">
                     <i className="fa fa-pencil-alt text-warning fs-4"></i>
                   </div>
-                  <h4 className="mb-3 mt-2">Make Quizzes</h4>
+                  <h4 className="mb-3 mt-2">Create A Quiz</h4>
                   <p className="mb-4">Create and design your own quizzes to challenge others. Customize questions, and create quizzes based on your interests.</p>
                 </div>
-                <Link to="/create-quiz" style={buttonStyle}>Create Quiz</Link>
+                <Link to={getCreateQuizPath()} style={buttonStyle}>Try It</Link>
               </div>
             </div>
 
-            {/* Challenge with AI */}
+            {/* AI Challenge */}
             <div className="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
               <div className="service-item h-100 p-5" style={cardStyle}>
                 <div style={contentStyle}>
@@ -99,9 +119,10 @@ function Features() {
                   <h4 className="mb-3 mt-2">Adaptive Learning with AI</h4>
                   <p className="mb-4">Master topics efficiently with AI-powered adaptive learning. Our smart system analyzes your performance and customizes quiz difficulty in real time—helping you improve faster and stay engaged like never before.</p>
                 </div>
-                <Link to="/ai-challenge" style={buttonStyle}>Challenge AI</Link>
+                <Link to={getAiChallengePath()} style={buttonStyle}>Try It</Link>
               </div>
             </div>
+
           </div>
         </div>
       </div>
