@@ -2,6 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 dotenv.config();
 import connectDB from './config/db.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
@@ -19,6 +22,12 @@ const port = process.env.PORT || 5000;
 connectDB();
 
 const app = express();
+
+
+
+// Needed for path handling with ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 
@@ -43,12 +52,21 @@ app.use(express.urlencoded({ extended: true }));
  app.use('/api/groqs', groqRoute);//groqRoute
 
 
-app.get('/', (req,res) =>{
+// Serve frontend in production
+if (process.env.NODE_ENV === 'production') {
+  const frontendPath = path.join(__dirname, '../frontend/build');
+  app.use(express.static(frontendPath));
 
-    res.send('Api is running');
-})
+  app.get('*', (req, res) =>
+    res.sendFile(path.resolve(frontendPath, 'index.html'))
+  );
+} else {
+  app.get('/', (req, res) => {
+    res.send('API is running...');
+  });
+}
 
-
+//error handling
 app.use(notFound);
 app.use(errorHandler);
   
