@@ -19,9 +19,14 @@ connectDB();
 
 const app = express();
 
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://quiznexus.onrender.com', // ✅ your deployed frontend
+];
+
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: allowedOrigins,
   credentials: true, // ✅ Allow cookies & authentication headers
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // ✅ Allowed methods
   allowedHeaders: ['Content-Type', 'Authorization'], // ✅ Allow JWT in headers
