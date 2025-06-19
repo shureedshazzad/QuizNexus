@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
 dotenv.config();
 import connectDB from './config/db.js';
@@ -14,22 +13,11 @@ import subjectRoute from './routes/subjectRoute.js';
 import groqRoute from './routes/groqRoute.js';
 import { createServer } from 'http'; // HTTP server for Socket.IO
 
-
-
-
 const port = process.env.PORT || 5000;
 
 connectDB();
 
 const app = express();
-
-
-
-// Needed for path handling with ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-
 
 
 app.use(cors({
@@ -52,19 +40,30 @@ app.use(express.urlencoded({ extended: true }));
  app.use('/api/groqs', groqRoute);//groqRoute
 
 
+ const __dirname = path.resolve();
+
+
 // Serve frontend in production
 if (process.env.NODE_ENV === 'production') {
-  const frontendPath = path.join(__dirname, '../frontend/build');
-  app.use(express.static(frontendPath));
+  //set static folder
+  app.use(express.static(path.join(__dirname,'/frontend/build')));
 
-  app.get('*', (req, res) =>
-    res.sendFile(path.resolve(frontendPath, 'index.html'))
+  //any route that is not api will be redirected to index.html
+
+  app.get('*',(req,res) =>
+    res.sendFile(path.resolve(__dirname, 'frontend','build','index.html'))
   );
-} else {
-  app.get('/', (req, res) => {
-    res.send('API is running...');
-  });
 }
+
+else{
+  app.get('/', (req, res) => {
+  res.send('API is running...');
+});
+
+}
+
+
+
 
 //error handling
 app.use(notFound);
@@ -76,70 +75,11 @@ app.use(errorHandler);
 //create an http server
 const httpServer = createServer(app);
 
-// //create a socket.io server
-// const io = new Server(httpServer, {
-//     cors: {
-//         origin: 'http://localhost:3000',
-//         credentials: true,
-//     },
-// });
 
-
-// // Socket.IO connection handler
-// io.on('connection', (socket) => {
-//   console.log('A user connected:', socket.id);
-
-//   // Handle joining a quiz
-//   socket.on('join-quiz', async (quizId) => {
-//     try {
-//       socket.join(quizId); // Join a room for the quiz
-//       console.log(`User ${socket.id} joined quiz ${quizId}`);
-
-//       // Fetch the updated leaderboard from the database using Mongoose
-//       const quiz = await Quiz.findById(quizId).populate('leaderboard.user_id', 'userName avatar');
-//       const leaderboard = quiz.leaderboard;
-
-//       console.log(leaderboard);
-//       // Notify all clients in the quiz room about the updated leaderboard
-//       io.to(quizId).emit('leaderboard-updated', { leaderboard });
-//     } catch (error) {
-//       console.error('Error fetching quiz:', error);
-//     }
-//   });
-
-
- 
-
-
-//   // Handle disconnection
-//   socket.on('disconnect', () => {
-//     console.log('A user disconnected:', socket.id);
-//   });
-// });
 
 httpServer.listen(port, () => console.log(`Server is running on port ${port}`));
   
-//     // Handle starting a quiz
-//     socket.on('start-quiz', (quizId) => {
-//       console.log(`Quiz ${quizId} started by user ${socket.id}`);
-  
-//       // Notify all participants in the quiz that it has started
-//       io.to(quizId).emit('quiz-started', { quizId });
-//     });
-  
-//     // Handle answering a question
-//     socket.on('submit-answer', ({ quizId, userId, answer }) => {
-//       console.log(`User ${userId} submitted answer for quiz ${quizId}: ${answer}`);
-  
-//       // Notify all participants in the quiz about the answer submission
-//       io.to(quizId).emit('answer-submitted', { userId, answer });
-//     });
-  
-//     // Handle disconnection
-//     socket.on('disconnect', () => {
-//       console.log('A user disconnected:', socket.id);
-//     });
-// });
+
 
 
 
