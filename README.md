@@ -71,11 +71,4 @@
 
 ---
 
-## 📦 Installation & Setup
 
-### Backend
-
-1. Clone the repo and navigate to backend folder  
-   ```bash
-   git clone https://github.com/yourusername/QuizNexus.git
-   cd QuizNexus/backend
