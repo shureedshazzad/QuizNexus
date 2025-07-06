@@ -65,8 +65,8 @@
 | Frontend                                   | Backend                             | AI & APIs                | Database                  |
 |--------------------------------------------|------------------------------------|--------------------------|---------------------------|
 | React.js with Hooks & React Router 🧩       | Node.js + Express.js 🖥️             | LLaMA 4 Scout via Groq API 🤖 | MongoDB with Mongoose 🗃️     |
-| Redux Toolkit (RTK Query) ⚛️                | JWT Authentication 🔐               | OpenAI API for fallback  | Redis (optional caching)   |
-| Bootstrap 5 for responsive UI 🎨            | RESTful API Endpoints 🌐            | AI-powered adaptive quiz |                           |
+| Redux Toolkit (RTK Query) ⚛️                | JWT Authentication 🔐               | AI-powered adaptive qui  |                           |
+| Bootstrap 5 for responsive UI 🎨            | RESTful API Endpoints 🌐            |   |                           |
 | React Icons & React Toastify for UX 🎉     | Nodemailer for OTP emails 📧         |                          |                           |
 
 ---
