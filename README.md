@@ -1,8 +1,5 @@
 # 🎉 QuizNexus - Adaptive Quiz Platform
 
-![QuizNexus Banner](https://via.placeholder.com/1200x300?text=QuizNexus+Banner)
-
----
 
 ## 🚀 Overview
 
